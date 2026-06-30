@@ -298,6 +298,10 @@ ul{list-style:none;}
 .kf-input,.kf-textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;color:var(--text);font-family:var(--font-body);font-size:14px;transition:border-color 150ms ease;}
 .kf-input:focus,.kf-textarea:focus{outline:none;border-color:var(--primary);}
 .kf-textarea{resize:vertical;min-height:120px;}
+.kf-status{margin-top:14px;padding:13px 16px;border-radius:var(--r);font-size:14px;font-weight:600;text-align:center;}
+.kf-status.ok{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#4ade80;}
+.kf-status.err{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#f87171;}
+.kf-status.pending{background:var(--card-2);border:1px solid var(--border);color:var(--muted);}
 .kontakt-info{display:flex;flex-direction:column;gap:16px;}
 .ki-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:22px;display:flex;align-items:flex-start;gap:14px;}
 .ki-ico{width:42px;height:42px;border-radius:12px;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
@@ -675,7 +679,8 @@ ul{list-style:none;}
         <div class="kf-group"><label class="kf-label">E-Mail</label><input class="kf-input" type="email" name="email" required></div>
         <div class="kf-group"><label class="kf-label">Verein / Organisation</label><input class="kf-input" type="text" name="verein"></div>
         <div class="kf-group"><label class="kf-label">Nachricht</label><textarea class="kf-textarea" name="nachricht" required></textarea></div>
-        <button type="submit" class="btn btn-primary btn-block">Nachricht senden</button>
+        <button type="submit" class="btn btn-primary btn-block" id="kfSubmitBtn">Nachricht senden</button>
+        <div id="kfStatus" class="kf-status" style="display:none;"></div>
       </form>
       <div class="kontakt-info">
         <div class="ki-card">
@@ -788,14 +793,61 @@ ul{list-style:none;}
   els.forEach(function(el){ io.observe(el); });
 })();
 
-// Kontaktformular (Platzhalter – noch keine Backend-Anbindung)
+// Kontaktformular – sendet an ONLANG Apps Script Backend
 (function(){
+  const GAS_KONTAKT_URL = 'https://script.google.com/macros/s/AKfycby8Q7fZMXwaqVZkesCV-uHIY4Q6U75LEcQjw2eiKVFr0NWz2lNObSxkF474iGnvaM1WVw/exec';
   const form = document.getElementById('kontaktForm');
+  const btn = document.getElementById('kfSubmitBtn');
+  const status = document.getElementById('kfStatus');
+
+  function showStatus(type, text){
+    if(!status) return;
+    status.style.display = 'block';
+    status.className = 'kf-status ' + type;
+    status.textContent = text;
+  }
+
   if(form){
     form.addEventListener('submit', function(e){
       e.preventDefault();
-      alert('Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.\n\n(Hinweis: Formular-Versand muss noch an ein Backend angebunden werden.)');
-      form.reset();
+
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        verein: form.verein.value.trim(),
+        nachricht: form.nachricht.value.trim()
+      };
+
+      if(!data.name || !data.email || !data.nachricht){
+        showStatus('err', 'Bitte alle Pflichtfelder ausfüllen.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Wird gesendet…';
+      showStatus('pending', 'Nachricht wird gesendet…');
+
+      fetch(GAS_KONTAKT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      })
+      .then(function(resp){ return resp.json(); })
+      .then(function(result){
+        if(result.success){
+          showStatus('ok', '✓ Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet. Wir melden uns in Kürze.');
+          form.reset();
+        } else {
+          showStatus('err', 'Es gab ein Problem beim Senden. Bitte versuchen Sie es erneut oder schreiben Sie an info@onlang.de.');
+        }
+      })
+      .catch(function(){
+        showStatus('err', 'Es gab ein Problem beim Senden. Bitte versuchen Sie es erneut oder schreiben Sie an info@onlang.de.');
+      })
+      .finally(function(){
+        btn.disabled = false;
+        btn.textContent = 'Nachricht senden';
+      });
     });
   }
 })();
