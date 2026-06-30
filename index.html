@@ -332,6 +332,7 @@ ul{list-style:none;}
 .ftr-links{display:flex;flex-direction:column;gap:10px;}
 .ftr-links a{font-size:13px;color:var(--hdr-text-dim);transition:color 150ms ease;}
 .ftr-links a:hover{color:var(--primary);}
+.ftr-soon{font-size:13px;color:var(--hdr-text-dim);opacity:.55;cursor:default;}
 .ftr-bottom{border-top:1px solid rgba(255,255,255,.06);padding:18px 28px;max-width:var(--mw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .ftr-copy{font-size:12px;color:var(--faint);}
 .ftr-legal{display:flex;gap:18px;flex-wrap:wrap;}
@@ -601,7 +602,7 @@ ul{list-style:none;}
           <div class="preis-feature"><span class="preis-feature-ico">✓</span>Alles aus Pro</div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span>KI-Spielberichte</div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span>Social-Media-Automatisierung</div>
-          <div class="preis-feature dim"><span class="preis-feature-ico">○</span>Livestream-Highlights (bald)</div>
+          <div class="preis-feature dim"><span class="preis-feature-ico">○</span>Livestream-Highlights (geplant)</div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span>Sponsorenverwaltung</div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span>Premium-Support</div>
         </div>
@@ -617,12 +618,12 @@ ul{list-style:none;}
     <div class="sec-head">
       <div class="sec-eyebrow">Aktuelles</div>
       <h2 class="sec-title">News</h2>
-      <p class="sec-sub">Neuigkeiten direkt aus dem ONLANG Studio.</p>
+      <p class="sec-sub">Demnächst aus dem ONLANG Studio.</p>
     </div>
     <div class="news-grid" id="newsGrid">
-      <div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">Produkt</div><div class="news-title">ONLANG Studio 2.0 ist da</div><div class="news-date">Demnächst</div></div></div>
-      <div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">Partnerschaft</div><div class="news-title">Neue Pilotvereine an Bord</div><div class="news-date">Demnächst</div></div></div>
-      <div class="news-card"><div class="news-thumb">🤖</div><div class="news-body"><div class="news-cat">KI</div><div class="news-title">KI-Spielberichte live im Test</div><div class="news-date">Demnächst</div></div></div>
+      <div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">Produkt</div><div class="news-title">ONLANG Studio 2.0 ist da</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>
+      <div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">Partnerschaft</div><div class="news-title">Neue Pilotvereine an Bord</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>
+      <div class="news-card"><div class="news-thumb">🤖</div><div class="news-body"><div class="news-cat">KI</div><div class="news-title">KI-Spielberichte live im Test</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>
     </div>
   </div>
 </section>
@@ -689,7 +690,7 @@ ul{list-style:none;}
         </div>
         <div class="ki-card">
           <div class="ki-ico">📞</div>
-          <div><div class="ki-lbl">Telefon</div><div class="ki-val"><a href="tel:+4901792179021">01792179021</a></div></div>
+          <div><div class="ki-lbl">Telefon</div><div class="ki-val"><a href="tel:+4901792179021">+49 179 2179021</a></div></div>
         </div>
         <div class="ki-card">
           <div class="ki-ico">📱</div>
@@ -735,7 +736,7 @@ ul{list-style:none;}
       <div class="ftr-col-title">Zugang</div>
       <div class="ftr-links">
         <a href="https://studio-onlang-test.netlify.app" target="_blank" rel="noopener">Login Studio</a>
-        <a href="#" id="ftrLoginKunden">Login Kunden</a>
+        <span class="ftr-soon" title="Demnächst verfügbar">Login Kunden (demnächst)</span>
         <a href="#kontakt">Support</a>
       </div>
     </div>
@@ -743,9 +744,9 @@ ul{list-style:none;}
   <div class="ftr-bottom">
     <div class="ftr-copy">© <span id="ftrYear"></span> ONLANG. Alle Rechte vorbehalten.</div>
     <div class="ftr-legal">
-      <a href="https://app.onlang.de/impressum" target="_blank" rel="noopener">Impressum</a>
-      <a href="https://app.onlang.de/bildverwaltung" target="_blank" rel="noopener">Bildverwaltung &amp; Datenschutz</a>
-      <a href="https://app.onlang.de/nutzungsbedingungen" target="_blank" rel="noopener">Nutzungsbedingungen</a>
+      <a href="/impressum.html">Impressum</a>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <a href="/nutzungsbedingungen.html">Nutzungsbedingungen</a>
     </div>
   </div>
 </footer>
