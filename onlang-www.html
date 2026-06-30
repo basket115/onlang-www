@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONLANG – Die digitale Kommunikationsplattform für Sportvereine</title>
+<meta name="description" content="ONLANG ist die digitale Kommunikationsplattform für Sportvereine. Ein Beitrag – automatisch auf Website, App, Newsletter und Social Media.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   ROOT VARIABLEN – Navy Theme (identisch zu app.onlang.de)
+   ═══════════════════════════════════════════════════════ */
+:root{
+  --bg:#071726;
+  --bg-soft:#0B1E2F;
+  --card:#10263A;
+  --card-2:#162F46;
+  --card-3:#1B3A55;
+  --border:#1C3349;
+  --border-2:#26425C;
+  --text:#F4F1EA;
+  --muted:#C7CBD1;
+  --faint:#8A95A1;
+  --primary:#F47A1F;
+  --primary-dark:#D95F0B;
+  --primary-dim:rgba(244,122,31,.12);
+  --hdr-bg:#061421;
+  --hdr-text:#F4F1EA;
+  --hdr-text-dim:#9AA5B1;
+  --font-headline:'Oswald',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --r:10px;
+  --rl:12px;
+  --rx:14px;
+  --round:999px;
+  --mw:1240px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;border:none;background:none;cursor:pointer;}
+ul{list-style:none;}
+.wrap{max-width:var(--mw);margin:0 auto;padding:0 28px;}
+.sec{padding:88px 0;}
+.sec-alt{background:var(--bg-soft);}
+.sec-head{margin-bottom:48px;text-align:center;}
+.sec-head.left{text-align:left;}
+.sec-eyebrow{font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:12px;}
+.sec-title{font-family:var(--font-headline);font-size:clamp(28px,4vw,42px);font-weight:600;text-transform:uppercase;letter-spacing:0;line-height:1.12;margin-bottom:14px;}
+.sec-sub{font-size:16px;color:var(--muted);max-width:600px;margin:0 auto;line-height:1.6;}
+.sec-head.left .sec-sub{margin:0;}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-headline);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:14px 28px;border-radius:var(--rl);transition:background 150ms ease,transform 150ms ease,border-color 150ms ease;cursor:pointer;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);}
+.btn-ghost{background:transparent;border:1.5px solid var(--border-2);color:var(--text);}
+.btn-ghost:hover{border-color:var(--primary);background:var(--primary-dim);transform:translateY(-2px);}
+.btn-sm{padding:10px 20px;font-size:12px;}
+.btn-block{width:100%;justify-content:center;}
+
+@media(max-width:1024px){.sec{padding:64px 0;}}
+@media(max-width:640px){.sec{padding:48px 0;}.wrap{padding:0 20px;}}
+
+/* ═══════════════════════════════════════════════════════
+   HEADER / NAVIGATION
+   ═══════════════════════════════════════════════════════ */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(6,20,33,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);}
+.hdr-in{max-width:var(--mw);margin:0 auto;padding:0 28px;height:76px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-brand{display:flex;align-items:center;gap:12px;}
+.hdr-logo{width:42px;height:42px;border-radius:var(--rl);background:var(--primary);display:flex;align-items:center;justify-content:center;font-family:var(--font-headline);font-size:17px;font-weight:700;color:#fff;flex-shrink:0;}
+.hdr-name{font-family:var(--font-headline);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--hdr-text);}
+.hdr-nav{display:flex;align-items:center;gap:30px;}
+.hdr-nav a{font-size:14px;font-weight:500;color:var(--hdr-text-dim);transition:color 150ms ease;}
+.hdr-nav a:hover{color:var(--text);}
+.hdr-right{display:flex;align-items:center;gap:16px;}
+.hdr-burger{display:none;width:40px;height:40px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);align-items:center;justify-content:center;flex-direction:column;gap:4px;flex-shrink:0;}
+.hdr-burger span{width:18px;height:2px;background:var(--text);border-radius:2px;}
+.mob-nav{display:none;position:fixed;inset:76px 0 0 0;background:var(--hdr-bg);z-index:99;padding:32px 28px;flex-direction:column;gap:0;overflow-y:auto;}
+.mob-nav.open{display:flex;}
+.mob-nav a{font-family:var(--font-headline);font-size:20px;font-weight:600;text-transform:uppercase;color:var(--hdr-text);padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.mob-nav .btn{margin-top:20px;}
+
+/* ═══════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════ */
+.hero{position:relative;padding:90px 0 100px;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 900px 600px at 15% 20%,rgba(244,122,31,.16),transparent 60%),radial-gradient(ellipse 700px 500px at 90% 80%,rgba(244,122,31,.10),transparent 55%),linear-gradient(180deg,var(--bg) 0%,var(--bg-soft) 100%);z-index:0;}
+.hero::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0px,transparent 1px,transparent 80px);z-index:0;mask-image:radial-gradient(ellipse 800px 500px at 30% 30%,#000,transparent 70%);}
+.hero-in{position:relative;z-index:1;max-width:var(--mw);margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
+.hero-left{min-width:0;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--primary-dim);border:1px solid rgba(244,122,31,.3);color:var(--primary);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:7px 16px;border-radius:var(--round);margin-bottom:22px;}
+.hero-title{font-family:var(--font-headline);font-size:clamp(34px,5vw,58px);font-weight:600;text-transform:uppercase;line-height:1.08;letter-spacing:0;margin-bottom:22px;}
+.hero-title span{color:var(--primary);}
+.hero-sub{font-size:18px;color:var(--muted);line-height:1.65;max-width:520px;margin-bottom:36px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border);padding-top:28px;}
+.hero-stat{padding-right:16px;}
+.hero-stat-ico{font-size:20px;margin-bottom:8px;}
+.hero-stat-lbl{font-size:13px;font-weight:600;color:var(--text);}
+
+.hero-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:420px;}
+.hv-laptop{position:relative;width:88%;max-width:460px;}
+.hv-laptop-screen{background:var(--card);border:1px solid var(--border-2);border-radius:14px 14px 0 0;padding:14px 14px 0;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.hv-laptop-bar{display:flex;gap:6px;padding-bottom:12px;}
+.hv-laptop-dot{width:8px;height:8px;border-radius:50%;background:var(--border-2);}
+.hv-laptop-content{background:var(--bg);border-radius:8px 8px 0 0;padding:20px;aspect-ratio:16/10;display:flex;flex-direction:column;gap:10px;}
+.hv-laptop-row{height:10px;background:var(--card-2);border-radius:4px;}
+.hv-laptop-row.w1{width:55%;height:16px;background:var(--primary);opacity:.85;}
+.hv-laptop-row.w2{width:90%;}
+.hv-laptop-row.w3{width:75%;}
+.hv-laptop-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;}
+.hv-laptop-card{background:var(--card-2);border-radius:6px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.hv-laptop-base{height:14px;background:linear-gradient(180deg,var(--card-3),var(--border-2));border-radius:0 0 10px 10px;position:relative;}
+.hv-laptop-base::after{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);width:60px;height:5px;background:var(--border);border-radius:0 0 6px 6px;}
+.hv-phone{position:absolute;right:-6%;bottom:-8%;width:148px;background:var(--card);border:1px solid var(--border-2);border-radius:26px;padding:10px;box-shadow:0 24px 60px rgba(0,0,0,.55);}
+.hv-phone-screen{background:var(--bg);border-radius:18px;aspect-ratio:9/18;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.hv-phone-logo{width:34px;height:34px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-family:var(--font-headline);font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.hv-phone-row{width:100%;height:7px;background:var(--card-2);border-radius:4px;}
+.hv-phone-row.w1{width:70%;}
+.hv-phone-row.w2{width:85%;}
+.hv-phone-card{width:100%;aspect-ratio:2.4;background:var(--card-2);border-radius:8px;margin-top:6px;}
+
+@media(max-width:1024px){
+  .hero-in{grid-template-columns:1fr;gap:48px;}
+  .hero-visual{order:-1;min-height:320px;}
+  .hv-laptop{max-width:380px;}
+  .hero-stats{grid-template-columns:repeat(2,1fr);gap:20px;}
+}
+@media(max-width:640px){
+  .hdr-nav{display:none;}
+  .hdr-right .btn{display:none;}
+  .hdr-burger{display:flex;}
+  .hero{padding:48px 0 64px;}
+  .hero-btns{flex-direction:column;}
+  .hero-btns .btn{width:100%;justify-content:center;}
+  .hv-phone{width:108px;right:-2%;}
+}
+
+/* ═══════════════════════════════════════════════════════
+   WARUM ONLANG
+   ═══════════════════════════════════════════════════════ */
+.warum-in{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.warum-visual{display:flex;flex-direction:column;gap:12px;}
+.warum-row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:16px 20px;}
+.warum-row.cross{opacity:.45;}
+.warum-row-ico{width:38px;height:38px;border-radius:10px;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.warum-row-txt{font-size:14px;font-weight:500;color:var(--muted);}
+.warum-arrow{text-align:center;font-size:22px;color:var(--primary);margin:2px 0;}
+.warum-final{background:var(--primary);}
+.warum-final .warum-row-txt{color:#fff;font-weight:700;}
+.warum-final .warum-row-ico{background:rgba(255,255,255,.2);}
+.warum-text p{font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.warum-text strong{color:var(--text);}
+.warum-claim{font-family:var(--font-headline);font-size:24px;font-weight:600;text-transform:uppercase;color:var(--primary);margin-top:24px;}
+
+@media(max-width:1024px){.warum-in{grid-template-columns:1fr;gap:40px;}}
+
+/* ═══════════════════════════════════════════════════════
+   LÖSUNGEN GRID
+   ═══════════════════════════════════════════════════════ */
+.loes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.loes-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:12px;transition:transform 180ms ease,border-color 180ms ease,box-shadow 180ms ease;cursor:pointer;}
+.loes-card:hover{transform:translateY(-4px);border-color:var(--border-2);box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.loes-ico{width:48px;height:48px;border-radius:14px;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.loes-name{font-family:var(--font-headline);font-size:17px;font-weight:600;text-transform:uppercase;}
+.loes-desc{font-size:13px;color:var(--muted);line-height:1.55;flex:1;}
+.loes-soon{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);background:var(--card-2);padding:3px 9px;border-radius:var(--round);width:fit-content;}
+
+@media(max-width:1024px){.loes-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.loes-grid{grid-template-columns:1fr;}}
+
+/* ═══════════════════════════════════════════════════════
+   SO FUNKTIONIERT ONLANG (Flow-Diagramm)
+   ═══════════════════════════════════════════════════════ */
+.flow-wrap{display:flex;flex-direction:column;align-items:center;gap:0;max-width:520px;margin:0 auto;}
+.flow-node{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:18px 24px;display:flex;align-items:center;gap:14px;}
+.flow-node.start{background:var(--primary);border-color:var(--primary);}
+.flow-node.start .flow-txt{color:#fff;font-weight:700;}
+.flow-node-ico{font-size:20px;flex-shrink:0;}
+.flow-txt{font-size:15px;font-weight:600;color:var(--text);}
+.flow-line{width:2px;height:28px;background:var(--border-2);}
+.flow-channels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;}
+.flow-chan{background:var(--card-2);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);}
+.flow-claim{text-align:center;margin-top:36px;font-family:var(--font-headline);font-size:clamp(20px,3vw,30px);font-weight:600;text-transform:uppercase;color:var(--text);}
+.flow-claim span{color:var(--primary);}
+
+@media(max-width:640px){.flow-channels{grid-template-columns:repeat(2,1fr);}}
+
+/* ═══════════════════════════════════════════════════════
+   FÜR WEN
+   ═══════════════════════════════════════════════════════ */
+.fuerwen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.fuerwen-tile{position:relative;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;transition:transform 180ms ease,border-color 180ms ease;}
+.fuerwen-tile:hover{transform:translateY(-4px);border-color:var(--primary);}
+.fuerwen-ico{font-size:30px;}
+.fuerwen-name{font-family:var(--font-headline);font-size:15px;font-weight:600;text-transform:uppercase;}
+.fuerwen-tile.soon{opacity:.55;}
+.fuerwen-badge{position:absolute;top:10px;right:10px;font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--card-2);color:var(--faint);padding:3px 8px;border-radius:var(--round);}
+
+@media(max-width:1024px){.fuerwen-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:640px){.fuerwen-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ═══════════════════════════════════════════════════════
+   REFERENZEN
+   ═══════════════════════════════════════════════════════ */
+.ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.ref-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:transform 180ms ease,border-color 180ms ease;}
+.ref-card:hover{transform:translateY(-4px);border-color:var(--border-2);}
+.ref-shot{aspect-ratio:16/10;background:linear-gradient(135deg,var(--card-2),var(--card-3));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.ref-shot-mock{width:80%;display:flex;flex-direction:column;gap:6px;}
+.ref-shot-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;}
+.ref-shot-bar.w1{width:60%;height:10px;background:var(--primary);opacity:.7;}
+.ref-shot-bar.w2{width:90%;}
+.ref-shot-bar.w3{width:70%;}
+.ref-body{padding:20px;}
+.ref-name{font-family:var(--font-headline);font-size:16px;font-weight:600;text-transform:uppercase;margin-bottom:4px;}
+.ref-meta{font-size:12px;color:var(--faint);}
+
+@media(max-width:1024px){.ref-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.ref-grid{grid-template-columns:1fr;}}
+
+/* ═══════════════════════════════════════════════════════
+   PREISE
+   ═══════════════════════════════════════════════════════ */
+.preis-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch;}
+.preis-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;position:relative;transition:transform 180ms ease,border-color 180ms ease;}
+.preis-card:hover{transform:translateY(-4px);}
+.preis-card.featured{border-color:var(--primary);background:linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);}
+.preis-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 16px;border-radius:var(--round);white-space:nowrap;}
+.preis-name{font-family:var(--font-headline);font-size:22px;font-weight:700;text-transform:uppercase;margin-bottom:6px;}
+.preis-tag{font-size:13px;color:var(--primary);font-weight:600;margin-bottom:18px;min-height:18px;}
+.preis-price{display:flex;align-items:baseline;gap:6px;margin-bottom:4px;}
+.preis-amount{font-family:var(--font-headline);font-size:38px;font-weight:700;}
+.preis-period{font-size:13px;color:var(--faint);}
+.preis-setup{font-size:12px;color:var(--faint);margin-bottom:24px;}
+.preis-features{display:flex;flex-direction:column;gap:11px;margin-bottom:28px;flex:1;}
+.preis-feature{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);}
+.preis-feature-ico{color:var(--primary);font-weight:700;flex-shrink:0;}
+.preis-feature.dim{color:var(--faint);}
+.preis-feature.dim .preis-feature-ico{color:var(--faint);}
+
+@media(max-width:1024px){.preis-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto;}}
+
+/* ═══════════════════════════════════════════════════════
+   NEWS
+   ═══════════════════════════════════════════════════════ */
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.news-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:transform 180ms ease;}
+.news-card:hover{transform:translateY(-4px);}
+.news-thumb{aspect-ratio:16/9;background:linear-gradient(135deg,var(--card-2),var(--card-3));display:flex;align-items:center;justify-content:center;font-size:28px;}
+.news-body{padding:18px 20px;}
+.news-cat{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--primary);margin-bottom:8px;}
+.news-title{font-family:var(--font-headline);font-size:16px;font-weight:600;text-transform:uppercase;line-height:1.3;margin-bottom:8px;}
+.news-date{font-size:12px;color:var(--faint);}
+
+@media(max-width:1024px){.news-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.news-grid{grid-template-columns:1fr;}}
+
+/* ═══════════════════════════════════════════════════════
+   ÜBER ONLANG
+   ═══════════════════════════════════════════════════════ */
+.ueber-in{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.ueber-text p{font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:18px;}
+.ueber-mission{background:var(--card);border:1px solid var(--border-2);border-left:3px solid var(--primary);border-radius:var(--r);padding:20px 24px;margin-top:8px;}
+.ueber-mission-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);margin-bottom:8px;}
+.ueber-mission-txt{font-family:var(--font-headline);font-size:18px;font-weight:500;text-transform:none;line-height:1.4;}
+.ueber-roadmap{display:flex;flex-direction:column;gap:14px;}
+.ueber-rm-group{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:18px 22px;}
+.ueber-rm-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.ueber-rm-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.ueber-rm-chip{font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--round);background:var(--card-2);color:var(--muted);}
+.ueber-rm-chip.active{background:var(--primary);color:#fff;}
+
+@media(max-width:1024px){.ueber-in{grid-template-columns:1fr;gap:40px;}}
+
+/* ═══════════════════════════════════════════════════════
+   KONTAKT
+   ═══════════════════════════════════════════════════════ */
+.kontakt-in{display:grid;grid-template-columns:1fr 1fr;gap:56px;}
+.kf-group{margin-bottom:18px;}
+.kf-label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;}
+.kf-input,.kf-textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;color:var(--text);font-family:var(--font-body);font-size:14px;transition:border-color 150ms ease;}
+.kf-input:focus,.kf-textarea:focus{outline:none;border-color:var(--primary);}
+.kf-textarea{resize:vertical;min-height:120px;}
+.kontakt-info{display:flex;flex-direction:column;gap:16px;}
+.ki-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:22px;display:flex;align-items:flex-start;gap:14px;}
+.ki-ico{width:42px;height:42px;border-radius:12px;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ki-lbl{font-family:var(--font-headline);font-size:14px;font-weight:600;text-transform:uppercase;margin-bottom:4px;}
+.ki-val{font-size:14px;color:var(--muted);}
+.ki-val a{color:var(--primary);}
+.ki-soc{display:flex;gap:8px;margin-top:4px;}
+.ki-soc a{width:34px;height:34px;background:var(--card-2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:border-color 150ms ease;}
+.ki-soc a:hover{border-color:var(--primary);}
+.ki-map{aspect-ratio:16/9;background:var(--card-2);border:1px solid var(--border);border-radius:var(--rl);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--faint);}
+
+@media(max-width:1024px){.kontakt-in{grid-template-columns:1fr;gap:36px;}}
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════ */
+.ftr{background:var(--hdr-bg);border-top:1px solid rgba(255,255,255,.06);}
+.ftr-top{max-width:var(--mw);margin:0 auto;padding:56px 28px 36px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;}
+.ftr-brand{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.ftr-logo{width:38px;height:38px;border-radius:var(--r);background:var(--primary);display:flex;align-items:center;justify-content:center;font-family:var(--font-headline);font-size:15px;font-weight:700;color:#fff;}
+.ftr-name{font-family:var(--font-headline);font-size:16px;font-weight:700;text-transform:uppercase;color:var(--hdr-text);}
+.ftr-desc{font-size:13px;color:var(--hdr-text-dim);line-height:1.6;max-width:280px;}
+.ftr-col-title{font-family:var(--font-headline);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text);margin-bottom:16px;}
+.ftr-links{display:flex;flex-direction:column;gap:10px;}
+.ftr-links a{font-size:13px;color:var(--hdr-text-dim);transition:color 150ms ease;}
+.ftr-links a:hover{color:var(--primary);}
+.ftr-bottom{border-top:1px solid rgba(255,255,255,.06);padding:18px 28px;max-width:var(--mw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.ftr-copy{font-size:12px;color:var(--faint);}
+.ftr-legal{display:flex;gap:18px;flex-wrap:wrap;}
+.ftr-legal a{font-size:12px;color:var(--faint);transition:color 150ms ease;}
+.ftr-legal a:hover{color:var(--muted);}
+
+@media(max-width:1024px){.ftr-top{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.ftr-top{grid-template-columns:1fr;}.ftr-bottom{flex-direction:column;align-items:flex-start;}}
+
+/* ═══════════════════════════════════════════════════════
+   SCROLL REVEAL (leichtes Fade-In)
+   ═══════════════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity 600ms ease,transform 600ms ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="hdr">
+  <div class="hdr-in">
+    <a class="hdr-brand" href="#start">
+      <div class="hdr-logo">ON</div>
+      <div class="hdr-name">ONLANG</div>
+    </a>
+    <nav class="hdr-nav">
+      <a href="#start">Start</a>
+      <a href="#loesungen">Lösungen</a>
+      <a href="#preise">Preise</a>
+      <a href="#referenzen">Referenzen</a>
+      <a href="#news">News</a>
+      <a href="#ueber">Über ONLANG</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="hdr-right">
+      <a class="btn btn-primary btn-sm" href="#kontakt">Kostenlos testen</a>
+      <button class="hdr-burger" id="burgerBtn" aria-label="Menü öffnen" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="mob-nav" id="mobNav">
+  <a href="#start">Start</a>
+  <a href="#loesungen">Lösungen</a>
+  <a href="#preise">Preise</a>
+  <a href="#referenzen">Referenzen</a>
+  <a href="#news">News</a>
+  <a href="#ueber">Über ONLANG</a>
+  <a href="#kontakt">Kontakt</a>
+  <a class="btn btn-primary btn-block" href="#kontakt">Kostenlos testen</a>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="start">
+  <div class="hero-in">
+    <div class="hero-left">
+      <div class="hero-eyebrow">🏀 Für Sportvereine gemacht</div>
+      <h1 class="hero-title">Die digitale Kommunikationsplattform für <span>Sportvereine</span></h1>
+      <p class="hero-sub">Erstellen Sie einen Beitrag nur einmal. ONLANG veröffentlicht ihn automatisch auf Website, Vereins-App, Newsletter und Social Media.</p>
+      <div class="hero-btns">
+        <a class="btn btn-primary" href="#loesungen">▶ Demo ansehen</a>
+        <a class="btn btn-ghost" href="#kontakt">Kostenlos testen</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-ico">✔️</div><div class="hero-stat-lbl">Eine Eingabe</div></div>
+        <div class="hero-stat"><div class="hero-stat-ico">✔️</div><div class="hero-stat-lbl">Website</div></div>
+        <div class="hero-stat"><div class="hero-stat-ico">✔️</div><div class="hero-stat-lbl">Vereins-App</div></div>
+        <div class="hero-stat"><div class="hero-stat-ico">✔️</div><div class="hero-stat-lbl">Alle Kanäle</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hv-laptop">
+        <div class="hv-laptop-screen">
+          <div class="hv-laptop-bar"><div class="hv-laptop-dot"></div><div class="hv-laptop-dot"></div><div class="hv-laptop-dot"></div></div>
+          <div class="hv-laptop-content">
+            <div class="hv-laptop-row w1"></div>
+            <div class="hv-laptop-row w2"></div>
+            <div class="hv-laptop-row w3"></div>
+            <div class="hv-laptop-cards">
+              <div class="hv-laptop-card">🏀</div>
+              <div class="hv-laptop-card">📰</div>
+              <div class="hv-laptop-card">📅</div>
+            </div>
+          </div>
+        </div>
+        <div class="hv-laptop-base"></div>
+        <div class="hv-phone">
+          <div class="hv-phone-screen">
+            <div class="hv-phone-logo">ON</div>
+            <div class="hv-phone-row w1"></div>
+            <div class="hv-phone-row w2"></div>
+            <div class="hv-phone-card"></div>
+            <div class="hv-phone-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WARUM ONLANG ═══════════ -->
+<section class="sec reveal">
+  <div class="wrap">
+    <div class="warum-in">
+      <div class="warum-text">
+        <div class="sec-eyebrow">Das Problem</div>
+        <h2 class="sec-title" style="text-align:left;">Warum ONLANG?</h2>
+        <p>Viele Vereine veröffentlichen <strong>dieselben Informationen mehrfach</strong> — einmal für die Website, einmal für die App, einmal für Facebook, einmal für den Newsletter. Das kostet Zeit, die ehrenamtliche Vereinsarbeiter nicht haben.</p>
+        <p>ONLANG löst dieses Problem an der Wurzel: Ein Beitrag wird einmal erstellt und automatisch überall dort veröffentlicht, wo Ihre Mitglieder, Fans und Sponsoren ihn erwarten.</p>
+        <div class="warum-claim">Ein Beitrag. Alle Kanäle.</div>
+      </div>
+      <div class="warum-visual">
+        <div class="warum-row cross"><div class="warum-row-ico">😩</div><div class="warum-row-txt">Beitrag für die Website schreiben</div></div>
+        <div class="warum-row cross"><div class="warum-row-ico">😩</div><div class="warum-row-txt">Beitrag nochmal für Facebook anpassen</div></div>
+        <div class="warum-row cross"><div class="warum-row-ico">😩</div><div class="warum-row-txt">Beitrag nochmal für den Newsletter kürzen</div></div>
+        <div class="warum-arrow">↓</div>
+        <div class="warum-row warum-final"><div class="warum-row-ico">🚀</div><div class="warum-row-txt">Einmal in ONLANG Studio eingeben — fertig</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ LÖSUNGEN ═══════════ -->
+<section class="sec sec-alt reveal" id="loesungen">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Funktionen</div>
+      <h2 class="sec-title">Lösungen</h2>
+      <p class="sec-sub">Alles, was Ihr Verein für eine moderne digitale Kommunikation braucht — aus einer Hand.</p>
+    </div>
+    <div class="loes-grid">
+      <div class="loes-card"><div class="loes-ico">🌐</div><div class="loes-name">Website</div><div class="loes-desc">Moderne, responsive Vereinswebsite ohne eigenes technisches Know-how.</div></div>
+      <div class="loes-card"><div class="loes-ico">📲</div><div class="loes-name">Vereins-App</div><div class="loes-desc">Die offizielle App Ihres Vereins für Mitglieder, Eltern und Fans.</div></div>
+      <div class="loes-card"><div class="loes-ico">🎬</div><div class="loes-name">ONLANG Studio</div><div class="loes-desc">Die zentrale Redaktionsplattform — so einfach wie eine Chat-App.</div></div>
+      <div class="loes-card"><div class="loes-ico">📧</div><div class="loes-name">Newsletter</div><div class="loes-desc">Automatisierte Newsletter direkt aus Ihren veröffentlichten Beiträgen.</div></div>
+      <div class="loes-card"><div class="loes-ico">📰</div><div class="loes-name">Vereinszeitung</div><div class="loes-desc">Druckfertige Vereinszeitung automatisch aus Ihren Inhalten erstellt.</div></div>
+      <div class="loes-card"><div class="loes-ico">📅</div><div class="loes-name">Veranstaltungen</div><div class="loes-desc">Termine, Anmeldungen und Erinnerungen zentral verwaltet.</div></div>
+      <div class="loes-card"><div class="loes-ico">🖼️</div><div class="loes-name">Plakatgenerator</div><div class="loes-desc">Professionelle Plakate und Banner in Sekunden erstellt.</div></div>
+      <div class="loes-card"><div class="loes-ico">🤝</div><div class="loes-name">Sponsoren</div><div class="loes-desc">Sponsoren-Verwaltung mit Premium-Darstellung und Reporting.</div></div>
+      <div class="loes-card"><div class="loes-ico">🔔</div><div class="loes-name">Push-Mitteilungen</div><div class="loes-desc">Wichtige Neuigkeiten erreichen Mitglieder direkt aufs Smartphone.</div></div>
+      <div class="loes-card"><div class="loes-ico">📣</div><div class="loes-name">Social Media</div><div class="loes-desc">Automatische Veröffentlichung auf Facebook, Instagram und mehr.</div></div>
+      <div class="loes-card"><div class="loes-ico">🤖</div><div class="loes-name">KI-Spielberichte</div><div class="loes-desc">Spielberichte werden automatisch aus Ergebnisdaten erstellt.</div></div>
+      <div class="loes-card"><div class="loes-ico">🎥</div><div class="loes-name">Livestream<span class="loes-soon" style="margin-left:8px;">Geplant</span></div><div class="loes-desc">Live-Übertragung Ihrer Heimspiele direkt in der App.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SO FUNKTIONIERT ONLANG ═══════════ -->
+<section class="sec reveal">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Funktionsweise</div>
+      <h2 class="sec-title">So funktioniert ONLANG</h2>
+      <p class="sec-sub">Ein zentraler Eingabepunkt — automatische Verteilung auf alle Kanäle.</p>
+    </div>
+    <div class="flow-wrap">
+      <div class="flow-node start"><div class="flow-node-ico">✍️</div><div class="flow-txt">ONLANG Studio — ein Beitrag erstellen</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-channels">
+        <div class="flow-chan">🌐 Website</div>
+        <div class="flow-chan">📲 App</div>
+        <div class="flow-chan">📘 Facebook</div>
+        <div class="flow-chan">📸 Instagram</div>
+        <div class="flow-chan">💼 LinkedIn</div>
+        <div class="flow-chan">📧 Newsletter</div>
+        <div class="flow-chan">📰 Presse</div>
+        <div class="flow-chan">🔔 Push</div>
+        <div class="flow-chan">📰 Vereinszeitung</div>
+      </div>
+    </div>
+    <div class="flow-claim">Ein Beitrag <span>—</span> alle Kanäle.</div>
+  </div>
+</section>
+
+<!-- ═══════════ FÜR WEN ═══════════ -->
+<section class="sec sec-alt reveal">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Zielgruppe</div>
+      <h2 class="sec-title">Für wen ist ONLANG gedacht?</h2>
+      <p class="sec-sub">ONLANG wächst mit Ihrem Verein — von der einzelnen Abteilung bis zum Verband.</p>
+    </div>
+    <div class="fuerwen-grid">
+      <div class="fuerwen-tile"><div class="fuerwen-ico">🏀</div><div class="fuerwen-name">Basketball</div></div>
+      <div class="fuerwen-tile"><div class="fuerwen-ico">⚽</div><div class="fuerwen-name">Fußball</div></div>
+      <div class="fuerwen-tile"><div class="fuerwen-ico">🤾</div><div class="fuerwen-name">Handball</div></div>
+      <div class="fuerwen-tile"><div class="fuerwen-ico">🏐</div><div class="fuerwen-name">Volleyball</div></div>
+      <div class="fuerwen-tile"><div class="fuerwen-ico">🏟️</div><div class="fuerwen-name">Mehrspartenvereine</div></div>
+      <div class="fuerwen-tile"><div class="fuerwen-ico">🗺️</div><div class="fuerwen-name">Kreise</div></div>
+      <div class="fuerwen-tile"><div class="fuerwen-ico">🏛️</div><div class="fuerwen-name">Verbände</div></div>
+      <div class="fuerwen-tile soon"><div class="fuerwen-ico">➕</div><div class="fuerwen-name">Weitere Sportarten</div><div class="fuerwen-badge">Bald</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ REFERENZEN ═══════════ -->
+<section class="sec reveal" id="referenzen">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Vertrauen</div>
+      <h2 class="sec-title">Referenzen</h2>
+      <p class="sec-sub">Diese Vereine und Verbände setzen bereits auf ONLANG.</p>
+    </div>
+    <div class="ref-grid">
+      <div class="ref-card">
+        <div class="ref-shot"><div class="ref-shot-mock"><div class="ref-shot-bar w1"></div><div class="ref-shot-bar w2"></div><div class="ref-shot-bar w3"></div></div></div>
+        <div class="ref-body"><div class="ref-name">Scorpions SG Gierath</div><div class="ref-meta">Basketball · NRW</div></div>
+      </div>
+      <div class="ref-card">
+        <div class="ref-shot"><div class="ref-shot-mock"><div class="ref-shot-bar w1"></div><div class="ref-shot-bar w2"></div><div class="ref-shot-bar w3"></div></div></div>
+        <div class="ref-body"><div class="ref-name">BBK Düsseldorf / Neuss</div><div class="ref-meta">Basketballkreis</div></div>
+      </div>
+      <div class="ref-card">
+        <div class="ref-shot"><div class="ref-shot-mock"><div class="ref-shot-bar w1"></div><div class="ref-shot-bar w2"></div><div class="ref-shot-bar w3"></div></div></div>
+        <div class="ref-body"><div class="ref-name">TG Neuss Tigers</div><div class="ref-meta">Basketball · Neuss</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PREISE ═══════════ -->
+<section class="sec sec-alt reveal" id="preise">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Konditionen</div>
+      <h2 class="sec-title">Preise</h2>
+      <p class="sec-sub">Transparent und fair — ohne versteckte Kosten.</p>
+    </div>
+    <div class="preis-grid">
+      <div class="preis-card">
+        <div class="preis-name">Basic</div>
+        <div class="preis-tag">3 Monate kostenlos testen</div>
+        <div class="preis-price"><span class="preis-amount">9,90 €</span><span class="preis-period">/ Monat danach</span></div>
+        <div class="preis-setup">Keine Einrichtungsgebühr</div>
+        <div class="preis-features">
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Website</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Vereins-App</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>News</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Veranstaltungen</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Push-Mitteilungen</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Kontakte</div>
+        </div>
+        <a class="btn btn-ghost btn-block" href="#kontakt">Kostenlos starten</a>
+      </div>
+      <div class="preis-card featured">
+        <div class="preis-badge">Beliebt</div>
+        <div class="preis-name">Pro</div>
+        <div class="preis-tag">Für aktive Vereine</div>
+        <div class="preis-price"><span class="preis-amount">19,90 €</span><span class="preis-period">/ Monat</span></div>
+        <div class="preis-setup">149 € einmalige Einrichtung</div>
+        <div class="preis-features">
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Alles aus Basic</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>ONLANG Studio</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Newsletter</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Vereinszeitung</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Plakatgenerator</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Presse</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Erweiterte Verwaltung</div>
+        </div>
+        <a class="btn btn-primary btn-block" href="#kontakt">Jetzt starten</a>
+      </div>
+      <div class="preis-card">
+        <div class="preis-name">Pro+</div>
+        <div class="preis-tag">Für Vereine mit Anspruch</div>
+        <div class="preis-price"><span class="preis-amount">49,90 €</span><span class="preis-period">/ Monat</span></div>
+        <div class="preis-setup">149–199 € einmalige Einrichtung</div>
+        <div class="preis-features">
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Alles aus Pro</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>KI-Spielberichte</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Social-Media-Automatisierung</div>
+          <div class="preis-feature dim"><span class="preis-feature-ico">○</span>Livestream-Highlights (bald)</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Sponsorenverwaltung</div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span>Premium-Support</div>
+        </div>
+        <a class="btn btn-ghost btn-block" href="#kontakt">Anfragen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ NEWS ═══════════ -->
+<section class="sec reveal" id="news">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Aktuelles</div>
+      <h2 class="sec-title">News</h2>
+      <p class="sec-sub">Neuigkeiten direkt aus dem ONLANG Studio.</p>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">Produkt</div><div class="news-title">ONLANG Studio 2.0 ist da</div><div class="news-date">Demnächst</div></div></div>
+      <div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">Partnerschaft</div><div class="news-title">Neue Pilotvereine an Bord</div><div class="news-date">Demnächst</div></div></div>
+      <div class="news-card"><div class="news-thumb">🤖</div><div class="news-body"><div class="news-cat">KI</div><div class="news-title">KI-Spielberichte live im Test</div><div class="news-date">Demnächst</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ÜBER ONLANG ═══════════ -->
+<section class="sec sec-alt reveal" id="ueber">
+  <div class="wrap">
+    <div class="ueber-in">
+      <div class="ueber-text">
+        <div class="sec-eyebrow">Vision</div>
+        <h2 class="sec-title" style="text-align:left;">Über ONLANG</h2>
+        <p>ONLANG entsteht aus über 30 Jahren praktischer Erfahrung in der Sportvereins-Kommunikation. Wir kennen die täglichen Herausforderungen ehrenamtlicher Vereinsarbeit aus erster Hand — und haben eine Plattform gebaut, die genau dort ansetzt.</p>
+        <div class="ueber-mission">
+          <div class="ueber-mission-lbl">Unsere Mission</div>
+          <div class="ueber-mission-txt">Die führende digitale Kommunikationsplattform für Sportvereine im deutschsprachigen Raum werden.</div>
+        </div>
+      </div>
+      <div class="ueber-roadmap">
+        <div class="ueber-rm-group">
+          <div class="ueber-rm-lbl">Sportarten</div>
+          <div class="ueber-rm-chips">
+            <span class="ueber-rm-chip active">Basketball</span>
+            <span class="ueber-rm-chip">Handball</span>
+            <span class="ueber-rm-chip">Volleyball</span>
+            <span class="ueber-rm-chip">Fußball</span>
+            <span class="ueber-rm-chip">Weitere Sportarten</span>
+          </div>
+        </div>
+        <div class="ueber-rm-group">
+          <div class="ueber-rm-lbl">Regionen</div>
+          <div class="ueber-rm-chips">
+            <span class="ueber-rm-chip active">Deutschland</span>
+            <span class="ueber-rm-chip">Österreich</span>
+            <span class="ueber-rm-chip">Schweiz</span>
+            <span class="ueber-rm-chip">Weitere europäische Länder</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ KONTAKT ═══════════ -->
+<section class="sec reveal" id="kontakt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Jetzt durchstarten</div>
+      <h2 class="sec-title">Kontakt</h2>
+      <p class="sec-sub">Wir beraten Sie gerne unverbindlich — schreiben Sie uns.</p>
+    </div>
+    <div class="kontakt-in">
+      <form id="kontaktForm">
+        <div class="kf-group"><label class="kf-label">Name</label><input class="kf-input" type="text" name="name" required></div>
+        <div class="kf-group"><label class="kf-label">E-Mail</label><input class="kf-input" type="email" name="email" required></div>
+        <div class="kf-group"><label class="kf-label">Verein / Organisation</label><input class="kf-input" type="text" name="verein"></div>
+        <div class="kf-group"><label class="kf-label">Nachricht</label><textarea class="kf-textarea" name="nachricht" required></textarea></div>
+        <button type="submit" class="btn btn-primary btn-block">Nachricht senden</button>
+      </form>
+      <div class="kontakt-info">
+        <div class="ki-card">
+          <div class="ki-ico">📧</div>
+          <div><div class="ki-lbl">E-Mail</div><div class="ki-val"><a href="mailto:info@onlang.de">info@onlang.de</a></div></div>
+        </div>
+        <div class="ki-card">
+          <div class="ki-ico">📞</div>
+          <div><div class="ki-lbl">Telefon</div><div class="ki-val">Auf Anfrage</div></div>
+        </div>
+        <div class="ki-card">
+          <div class="ki-ico">📱</div>
+          <div>
+            <div class="ki-lbl">Social Media</div>
+            <div class="ki-soc">
+              <a href="#" title="Facebook">📘</a>
+              <a href="#" title="Instagram">📸</a>
+              <a href="#" title="LinkedIn">💼</a>
+            </div>
+          </div>
+        </div>
+        <div class="ki-map">📍 Jüchen / NRW</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="ftr">
+  <div class="ftr-top">
+    <div>
+      <div class="ftr-brand"><div class="ftr-logo">ON</div><div class="ftr-name">ONLANG</div></div>
+      <div class="ftr-desc">Die digitale Kommunikationsplattform für Sportvereine. Ein Beitrag — alle Kanäle.</div>
+    </div>
+    <div>
+      <div class="ftr-col-title">Produkt</div>
+      <div class="ftr-links">
+        <a href="#loesungen">Lösungen</a>
+        <a href="#preise">Preise</a>
+        <a href="#referenzen">Referenzen</a>
+      </div>
+    </div>
+    <div>
+      <div class="ftr-col-title">Unternehmen</div>
+      <div class="ftr-links">
+        <a href="#ueber">Über ONLANG</a>
+        <a href="#news">News</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+    </div>
+    <div>
+      <div class="ftr-col-title">Zugang</div>
+      <div class="ftr-links">
+        <a href="https://studio-onlang-test.netlify.app" target="_blank" rel="noopener">Login Studio</a>
+        <a href="#" id="ftrLoginKunden">Login Kunden</a>
+        <a href="#kontakt">Support</a>
+      </div>
+    </div>
+  </div>
+  <div class="ftr-bottom">
+    <div class="ftr-copy">© <span id="ftrYear"></span> ONLANG. Alle Rechte vorbehalten.</div>
+    <div class="ftr-legal">
+      <a href="#">Datenschutz</a>
+      <a href="#">Impressum</a>
+      <a href="#">AGB</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mobile Menü Toggle
+(function(){
+  const burger = document.getElementById('burgerBtn');
+  const mobNav = document.getElementById('mobNav');
+  if(burger && mobNav){
+    burger.addEventListener('click', function(){
+      const isOpen = mobNav.classList.toggle('open');
+      burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    mobNav.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        mobNav.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+})();
+
+// Footer Jahr
+(function(){
+  const y = document.getElementById('ftrYear');
+  if(y) y.textContent = new Date().getFullYear();
+})();
+
+// Scroll Reveal
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+// Kontaktformular (Platzhalter – noch keine Backend-Anbindung)
+(function(){
+  const form = document.getElementById('kontaktForm');
+  if(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      alert('Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.\n\n(Hinweis: Formular-Versand muss noch an ein Backend angebunden werden.)');
+      form.reset();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
