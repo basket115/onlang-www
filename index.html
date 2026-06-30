@@ -7,7 +7,7 @@
 <meta name="description" content="ONLANG ist die digitale Kommunikationsplattform für Sportvereine. Ein Beitrag – automatisch auf Website, App, Newsletter und Social Media.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════
    ROOT VARIABLEN – Navy Theme (identisch zu app.onlang.de)
@@ -38,9 +38,18 @@
   --mw:1240px;
 }
 
+/* Schärferes Rendering für alle Headline-Elemente (Oswald) */
+h1,h2,h3,.sec-title,.hero-title,.hdr-name,.btn,.loes-name,.preis-name,
+.preis-amount,.news-title,.ref-name,.ftr-col-title,.ftr-name,.warum-claim,
+.flow-claim,.flow-txt,.fuerwen-name,.ueber-mission-txt,.mob-nav a{
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overflow-x:hidden;}
 a{text-decoration:none;color:inherit;}
 img{max-width:100%;display:block;}
 button{font-family:inherit;border:none;background:none;cursor:pointer;}
@@ -56,7 +65,7 @@ ul{list-style:none;}
 .sec-head.left .sec-sub{margin:0;}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-headline);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:14px 28px;border-radius:var(--rl);transition:background 150ms ease,transform 150ms ease,border-color 150ms ease;cursor:pointer;}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-headline);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:14px 28px;border-radius:var(--rl);transition:background 150ms ease,transform 150ms ease,border-color 150ms ease;cursor:pointer;-webkit-font-smoothing:antialiased;transform:translateZ(0);backface-visibility:hidden;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);}
 .btn-ghost{background:transparent;border:1.5px solid var(--border-2);color:var(--text);}
