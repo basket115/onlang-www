@@ -618,15 +618,75 @@ ul{list-style:none;}
     <div class="sec-head">
       <div class="sec-eyebrow">Aktuelles</div>
       <h2 class="sec-title">News</h2>
-      <p class="sec-sub">Demnächst aus dem ONLANG Studio.</p>
+      <p class="sec-sub" id="newsSubtitle">Neuigkeiten direkt aus dem ONLANG Studio.</p>
     </div>
     <div class="news-grid" id="newsGrid">
-      <div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">Produkt</div><div class="news-title">ONLANG Studio 2.0 ist da</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>
-      <div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">Partnerschaft</div><div class="news-title">Neue Pilotvereine an Bord</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>
-      <div class="news-card"><div class="news-thumb">🤖</div><div class="news-body"><div class="news-cat">KI</div><div class="news-title">KI-Spielberichte live im Test</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>
+      <!-- Wird dynamisch aus dem ONLANG Studio geladen -->
+      <div class="news-card news-loading"><div class="news-thumb" style="font-size:32px;color:var(--faint);">⏳</div><div class="news-body"><div class="news-cat">Laden…</div><div class="news-title">Beiträge werden geladen</div><div class="news-date"></div></div></div>
     </div>
   </div>
 </section>
+
+<script>
+(function(){
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbyUP8wHkErf7a20HJemThwY4Vq0xjQiCskpXDWwqysG2y3BCKMulLTRZ7-Fs0LbFoBacg/exec';
+  var KUNDEN_ID = 'V001';
+
+  var EMOJIS = {
+    'Unternehmensnews': '📣', 'Produkt': '🚀', 'Partnerschaft': '🤝',
+    'KI': '🤖', 'Sport': '🏀', 'Event': '🎉', 'default': '📰'
+  };
+
+  function formatDate(str) {
+    if (!str) return '';
+    var d = new Date(str);
+    if (isNaN(d)) return str;
+    return d.toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
+  }
+
+  function renderFallback() {
+    var grid = document.getElementById('newsGrid');
+    document.getElementById('newsSubtitle').textContent = 'Demnächst aus dem ONLANG Studio.';
+    grid.innerHTML =
+      '<div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">Produkt</div><div class="news-title">ONLANG Studio 2.0 ist da</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>' +
+      '<div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">Partnerschaft</div><div class="news-title">Neue Pilotvereine an Bord</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>' +
+      '<div class="news-card"><div class="news-thumb">🤖</div><div class="news-body"><div class="news-cat">KI</div><div class="news-title">KI-Spielberichte live im Test</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>';
+  }
+
+  function renderNews(beitraege) {
+    var grid = document.getElementById('newsGrid');
+    // Nur freigegebene News-Beiträge mit Website_Status JA
+    var news = beitraege.filter(function(b) {
+      return b.website_status === 'JA' || b.Website_Status === 'JA';
+    });
+    if (!news.length) { renderFallback(); return; }
+    // Maximal 3 anzeigen, neueste zuerst
+    news = news.slice(0, 3);
+    document.getElementById('newsSubtitle').textContent = 'Neuigkeiten direkt aus dem ONLANG Studio.';
+    grid.innerHTML = news.map(function(b) {
+      var kat   = b.kategorie || b.Kategorie || b.beitragsart || 'News';
+      var titel = b.headline  || b.Headline  || '–';
+      var teaser= b.teaser    || b.Teaser    || '';
+      var datum = formatDate(b.erstellt_am || b.Erstellt_Am || b.freigegeben_am || b.Freigegeben_Am || '');
+      var bild  = b.bild_url  || b.Bild_URL  || '';
+      var emoji = EMOJIS[kat] || EMOJIS['default'];
+      var thumb = bild
+        ? '<div class="news-thumb" style="background:var(--card-2);background-image:url('+bild+');background-size:cover;background-position:center;"></div>'
+        : '<div class="news-thumb">'+emoji+'</div>';
+      return '<div class="news-card">'+thumb+'<div class="news-body"><div class="news-cat">'+kat+'</div><div class="news-title">'+titel+'</div>'+(teaser?'<div class="news-teaser" style="font-size:13px;color:var(--muted);margin-bottom:6px;line-height:1.4;">'+teaser+'</div>':'')+'<div class="news-date">'+datum+'</div></div></div>';
+    }).join('');
+  }
+
+  fetch(GAS_URL + '?action=getStudioBeitraege&kundenId=' + KUNDEN_ID)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var beitraege = data.beitraege || data.data || data || [];
+      if (!Array.isArray(beitraege) || !beitraege.length) { renderFallback(); return; }
+      renderNews(beitraege);
+    })
+    .catch(function(){ renderFallback(); });
+})();
+</script>
 
 <!-- ═══════════ ÜBER ONLANG ═══════════ -->
 <section class="sec sec-alt reveal" id="ueber">
