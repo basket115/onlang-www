@@ -621,70 +621,129 @@ ul{list-style:none;}
       <p class="sec-sub" id="newsSubtitle">Neuigkeiten direkt aus dem ONLANG Studio.</p>
     </div>
     <div class="news-grid" id="newsGrid">
-      <!-- Wird dynamisch aus dem ONLANG Studio geladen -->
-      <div class="news-card news-loading"><div class="news-thumb" style="font-size:32px;color:var(--faint);">⏳</div><div class="news-body"><div class="news-cat">Laden…</div><div class="news-title">Beiträge werden geladen</div><div class="news-date"></div></div></div>
+      <div class="news-card"><div class="news-thumb" style="font-size:32px;color:var(--faint);">⏳</div><div class="news-body"><div class="news-cat">Laden…</div><div class="news-title">Beiträge werden geladen</div><div class="news-date"></div></div></div>
     </div>
   </div>
 </section>
 
+<!-- ═══════════ ARTIKEL-MODAL ═══════════ -->
+<div id="artikel-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);overflow-y:auto;backdrop-filter:blur(4px);" onclick="schliesseArtikel(event)">
+  <div style="max-width:800px;margin:48px auto 80px;background:var(--card);border:1px solid var(--border);border-radius:var(--rx);overflow:hidden;position:relative;" onclick="event.stopPropagation()">
+    <div id="artikel-bild-wrap"></div>
+    <div style="padding:32px 36px 40px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <span id="artikel-tag" style="background:var(--primary);color:#fff;font-family:var(--font-headline);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:3px;"></span>
+        <span id="artikel-datum" style="font-size:12px;color:var(--faint);font-family:var(--font-body);"></span>
+      </div>
+      <h1 id="artikel-titel" style="font-family:var(--font-headline);font-size:clamp(22px,4vw,36px);font-weight:500;text-transform:uppercase;line-height:1.1;letter-spacing:0;margin-bottom:14px;color:var(--text);"></h1>
+      <p id="artikel-teaser" style="font-size:16px;color:var(--muted);line-height:1.65;margin-bottom:24px;border-left:3px solid var(--primary);padding-left:16px;font-style:italic;"></p>
+      <div id="artikel-body" style="font-size:15px;line-height:1.75;color:var(--text);"></div>
+    </div>
+    <button onclick="schliesseArtikel()" style="position:absolute;top:16px;right:16px;width:36px;height:36px;background:var(--card-2);border:1px solid var(--border);border-radius:50%;color:var(--muted);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;">✕</button>
+  </div>
+</div>
+
 <script>
 (function(){
-  var GAS_URL = 'https://script.google.com/macros/s/AKfycbyUP8wHkErf7a20HJemThwY4Vq0xjQiCskpXDWwqysG2y3BCKMulLTRZ7-Fs0LbFoBacg/exec';
+  var GAS_URL  = 'https://script.google.com/macros/s/AKfycbyUP8wHkErf7a20HJemThwY4Vq0xjQiCskpXDWwqysG2y3BCKMulLTRZ7-Fs0LbFoBacg/exec';
   var KUNDEN_ID = 'V001';
+  var _alle = [];
 
-  var EMOJIS = {
-    'Unternehmensnews': '📣', 'Produkt': '🚀', 'Partnerschaft': '🤝',
-    'KI': '🤖', 'Sport': '🏀', 'Event': '🎉', 'default': '📰'
-  };
+  var EMOJIS = {'Unternehmensnews':'📣','Produkt':'🚀','Partnerschaft':'🤝','KI':'🤖','Sport':'🏀','Event':'🎉','default':'📰'};
 
-  function formatDate(str) {
-    if (!str) return '';
-    var d = new Date(str);
-    if (isNaN(d)) return str;
-    return d.toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
+  function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+
+  function normBeitrag(b){return{
+    spiel_id:    b.Spiel_ID    ||b.spiel_id    ||'',
+    headline:    b.Headline    ||b.headline    ||'',
+    teaser:      b.Teaser      ||b.teaser      ||'',
+    spielbericht:b.Spielbericht||b.spielbericht||'',
+    bild_url:    b.Bild_URL    ||b.bild_url    ||'',
+    video_url:   b.Video_URL   ||b.video_url   ||'',
+    kategorie:   b.Kategorie   ||b.kategorie   ||'',
+    beitragsart: b.Beitragsart ||b.beitragsart ||b.App||b.app||'',
+    datum:       b.Freigegeben_Am||b.freigegeben_am||b.Erstellt_Am||b.erstellt_am||'',
+    status:      b.Verein_Status||b.verein_status||'',
+    website_status: b.Website_Status||b.website_status||''
+  };}
+
+  function istFreigegeben(b){
+    var s = (b.status||'').toLowerCase();
+    var w = (b.website_status||'').toLowerCase();
+    return (s==='freigegeben'||s==='veröffentlicht') && (w==='ja'||w==='jа');
   }
 
-  function renderFallback() {
-    var grid = document.getElementById('newsGrid');
-    document.getElementById('newsSubtitle').textContent = 'Demnächst aus dem ONLANG Studio.';
-    grid.innerHTML =
-      '<div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">Produkt</div><div class="news-title">ONLANG Studio 2.0 ist da</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>' +
-      '<div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">Partnerschaft</div><div class="news-title">Neue Pilotvereine an Bord</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>' +
+  function fmtD(str){
+    if(!str)return'';
+    var d=new Date(str);
+    if(isNaN(d))return str.split(' ')[0]||str;
+    return d.toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'});
+  }
+
+  function renderFallback(){
+    document.getElementById('newsSubtitle').textContent='Demnächst aus dem ONLANG Studio.';
+    document.getElementById('newsGrid').innerHTML=
+      '<div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">Produkt</div><div class="news-title">ONLANG Studio 2.0 ist da</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>'+
+      '<div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">Partnerschaft</div><div class="news-title">Neue Pilotvereine an Bord</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>'+
       '<div class="news-card"><div class="news-thumb">🤖</div><div class="news-body"><div class="news-cat">KI</div><div class="news-title">KI-Spielberichte live im Test</div><div class="news-date">Demnächst aus dem ONLANG Studio</div></div></div>';
   }
 
-  function renderNews(beitraege) {
-    var grid = document.getElementById('newsGrid');
-    // Nur freigegebene News-Beiträge mit Website_Status JA
-    var news = beitraege.filter(function(b) {
-      return b.website_status === 'JA' || b.Website_Status === 'JA';
-    });
-    if (!news.length) { renderFallback(); return; }
-    // Maximal 3 anzeigen, neueste zuerst
-    news = news.slice(0, 3);
-    document.getElementById('newsSubtitle').textContent = 'Neuigkeiten direkt aus dem ONLANG Studio.';
-    grid.innerHTML = news.map(function(b) {
-      var kat   = b.kategorie || b.Kategorie || b.beitragsart || 'News';
-      var titel = b.headline  || b.Headline  || '–';
-      var teaser= b.teaser    || b.Teaser    || '';
-      var datum = formatDate(b.erstellt_am || b.Erstellt_Am || b.freigegeben_am || b.Freigegeben_Am || '');
-      var bild  = b.bild_url  || b.Bild_URL  || '';
-      var emoji = EMOJIS[kat] || EMOJIS['default'];
-      var thumb = bild
-        ? '<div class="news-thumb" style="background:var(--card-2);background-image:url('+bild+');background-size:cover;background-position:center;"></div>'
-        : '<div class="news-thumb">'+emoji+'</div>';
-      return '<div class="news-card">'+thumb+'<div class="news-body"><div class="news-cat">'+kat+'</div><div class="news-title">'+titel+'</div>'+(teaser?'<div class="news-teaser" style="font-size:13px;color:var(--muted);margin-bottom:6px;line-height:1.4;">'+teaser+'</div>':'')+'<div class="news-date">'+datum+'</div></div></div>';
+  function renderNews(beitraege){
+    _alle = beitraege.map(normBeitrag).filter(istFreigegeben);
+    if(!_alle.length){renderFallback();return;}
+    document.getElementById('newsSubtitle').textContent='Neuigkeiten direkt aus dem ONLANG Studio.';
+    var slice=_alle.slice(0,3);
+    document.getElementById('newsGrid').innerHTML=slice.map(function(b){
+      var kat=b.kategorie||b.beitragsart||'News';
+      var emoji=EMOJIS[kat]||EMOJIS['default'];
+      var thumb=b.bild_url
+        ?'<div class="news-thumb" style="background-image:url('+esc(b.bild_url)+');background-size:cover;background-position:center;"></div>'
+        :'<div class="news-thumb">'+emoji+'</div>';
+      var datum=fmtD(b.datum);
+      return '<div class="news-card" onclick="zeigeArtikel(\''+esc(b.spiel_id)+'\')" style="cursor:pointer;">'+thumb+
+        '<div class="news-body">'+
+        '<div class="news-cat">'+esc(kat)+'</div>'+
+        '<div class="news-title">'+esc(b.headline)+'</div>'+
+        (b.teaser?'<div class="news-teaser" style="font-size:13px;color:var(--muted);margin-bottom:6px;line-height:1.4;">'+esc(b.teaser)+'</div>':'')+
+        (datum?'<div class="news-date">📅 '+datum+'</div>':'')+
+        '</div></div>';
     }).join('');
   }
 
-  fetch(GAS_URL + '?action=getStudioBeitraege&kundenId=' + KUNDEN_ID)
-    .then(function(r){ return r.json(); })
+  window.zeigeArtikel=function(spiel_id){
+    var b=_alle.find(function(x){return x.spiel_id===spiel_id;});
+    if(!b)return;
+    document.getElementById('artikel-bild-wrap').innerHTML=b.bild_url
+      ?'<img src="'+esc(b.bild_url)+'" alt="" style="width:100%;max-height:420px;object-fit:cover;" onerror="this.remove()">':'';
+    document.getElementById('artikel-tag').textContent=b.kategorie||b.beitragsart||'News';
+    document.getElementById('artikel-datum').textContent=fmtD(b.datum)?'📅 '+fmtD(b.datum):'';
+    document.getElementById('artikel-titel').textContent=b.headline||'';
+    document.getElementById('artikel-teaser').textContent=b.teaser||'';
+    var body=document.getElementById('artikel-body');
+    var txt=b.spielbericht||'';
+    body.innerHTML=txt.includes('<')?txt:txt?txt.split('\n\n').map(function(p){return'<p style="margin-bottom:1em">'+esc(p)+'</p>';}).join(''):'';
+    var ytM=b.video_url&&b.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if(ytM)body.innerHTML+='<div style="margin-top:24px;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/'+ytM[1]+'" frameborder="0" allowfullscreen style="display:block;"></iframe></div>';
+    document.getElementById('artikel-modal').style.display='block';
+    document.body.style.overflow='hidden';
+  };
+
+  window.schliesseArtikel=function(e){
+    if(e&&e.type==='click'&&e.target!==document.getElementById('artikel-modal'))return;
+    document.getElementById('artikel-modal').style.display='none';
+    document.body.style.overflow='';
+  };
+
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')schliesseArtikel();});
+
+  fetch(GAS_URL+'?action=getStudioBeitraege&kundenId='+KUNDEN_ID)
+    .then(function(r){return r.json();})
     .then(function(data){
-      var beitraege = data.beitraege || data.data || data || [];
-      if (!Array.isArray(beitraege) || !beitraege.length) { renderFallback(); return; }
+      var beitraege=data.beitraege||data.data||data||[];
+      if(!Array.isArray(beitraege)||!beitraege.length){renderFallback();return;}
       renderNews(beitraege);
     })
-    .catch(function(){ renderFallback(); });
+    .catch(function(){renderFallback();});
 })();
 </script>
 
