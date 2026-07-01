@@ -667,11 +667,14 @@ ul{list-style:none;}
     website_status: b.Website_Status||b.website_status||''
   };}
 
-  function istFreigegeben(b){
-    var s = (b.status||'').toLowerCase();
-    var w = (b.website_status||'').toLowerCase();
-    return (s==='freigegeben'||s==='veröffentlicht') && (w==='ja'||w==='jа');
-  }
+function istFreigegeben(b){
+    // Case-insensitive nach Variante 2 (wie im Studio-Backend):
+    // String(...).trim().toUpperCase() === 'JA' – unabhängig davon, ob im
+    // Sheet "Ja", "ja", "JA" oder mit Leerzeichen davor/danach steht.
+    var s = String(b.status||'').trim().toUpperCase();
+    var w = String(b.website_status||'').trim().toUpperCase();
+    return (s==='FREIGEGEBEN' || s==='VERÖFFENTLICHT') && w==='JA';
+}
 
   function fmtD(str){
     if(!str)return'';
