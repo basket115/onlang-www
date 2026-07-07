@@ -833,54 +833,38 @@ img{display:block;max-width:100%;}
 // BBK-Spielbetrieb (Verein → Mannschaft → Sportdaten) — bewusst eigenständig,
 // ruft KEINE bestehende Vereins-Team-Funktion auf (sbTab/sbWaehleTeam/
 // sbInitErgebnisse/sbFilterErgebnisse/sbFilterSpielplan bleiben für
-// Vereinsseiten unverändert). Rein statische Übergangsdarstellung, keine
-// neue API, keine echten Daten — nur die Struktur wird vorbereitet.
-const BBK_VEREINE = [
-  { key:'djk-tusa-06-duesseldorf', name:'DJK TUSA 06 Düsseldorf', mannschaften:['Mannschaften folgen'] },
-  { key:'art-77-90-duesseldorf', name:'ART 77/90 Düsseldorf', mannschaften:['Mannschaften folgen'] },
-  { key:'tv-grafenberg-1888-e-v', name:'TV Grafenberg 1888 e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'tus-maccabi-duesseldorf-e-v', name:'TuS Maccabi Düsseldorf e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'ssv-duesseldorf-knittkuhl-1972', name:'SSV Düsseldorf-Knittkuhl 1972', mannschaften:['Mannschaften folgen'] },
-  { key:'turngemeinde-v-1881-duesseldorf', name:'Turngemeinde v.1881 Düsseldorf', mannschaften:['Mannschaften folgen'] },
-  { key:'isd-sportverein-e-v', name:'ISD Sportverein e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'sv-alte-freunde-95-duesseldorf', name:'SV Alte Freunde 95 Düsseldorf', mannschaften:['Mannschaften folgen'] },
-  { key:'weiberkram-e-v', name:'Weiberkram e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'giants-duesseldorf-e-v', name:'Giants Düsseldorf e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'dynamic-squad-basketball-academy', name:'Dynamic Squad Basketball Academy', mannschaften:['Mannschaften folgen'] },
-  { key:'bc-duesseldorf-nord-e-v', name:'BC Düsseldorf Nord e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'hochschulsport-duesseldorf-e-v', name:'Hochschulsport Düsseldorf e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'greek-baskets-duesseldorf', name:'Greek Baskets Düsseldorf', mannschaften:['Mannschaften folgen'] },
-  { key:'black-eagles-e-v', name:'Black Eagles e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'capitol-bascats-duesseldorf-e-v', name:'Capitol Bascats Düsseldorf e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'stv-rethel-e-v', name:'STV Rethel e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'ldh-sportverein', name:'LDH Sportverein', mannschaften:['Mannschaften folgen'] },
-  { key:'3x3-academy-duesseldorf-e-v', name:'3x3 Academy Düsseldorf e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'tsv-urdenbach-1894-e-v', name:'TSV Urdenbach 1894 e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'sg-art-giants-duesseldorf', name:'SG ART Giants Düsseldorf', mannschaften:['Mannschaften folgen'] },
-  { key:'osterather-tv-1893-e-v', name:'Osterather TV 1893 e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'tg-neuss-von-1848-e-v', name:'TG Neuss von 1848 e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'tsv-norf-e-v', name:'TSV Norf e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'vfr-1912-buettgen-e-v', name:'VfR 1912 Büttgen e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'sg-kaarst-e-v', name:'SG Kaarst e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'tsv-bayer-dormagen-e-v', name:'TSV Bayer Dormagen e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'bsg-blau-weiss-grevenbroich', name:'BSG Blau-Weiß Grevenbroich', mannschaften:['Mannschaften folgen'] },
-  { key:'sv-1930-rosellen-e-v', name:'SV 1930 Rosellen e. V.', mannschaften:['Mannschaften folgen'] },
-  { key:'fsv-juechen-1984-e-v', name:'FSV Jüchen 1984 e.V.', mannschaften:['Mannschaften folgen'] },
-  { key:'sg-rot-weiss-gierath-48-62-e-v', name:'SG Rot-Weiß Gierath 48/62 e.V.', mannschaften:['U10 Kreisliga','U12 Kreisliga','U14 Kreisliga','U16 Kreisliga','U18 Kreisliga'] },
-  { key:'bg-kaarst-buettgen', name:'BG Kaarst-Büttgen', mannschaften:['Mannschaften folgen'] },
-];
+// Vereinsseiten unverändert).
+//
+// PHASE 4 (07.07.2026): Vereine + Mannschaften kommen jetzt ausschließlich
+// aus dem Sheet BBK_Spielbetrieb (über getBbkVereine), nicht mehr aus einem
+// festen JS-Array. Neue Vereine/Mannschaften benötigen ab jetzt KEINE
+// Code-Änderung mehr — nur eine neue Zeile im Sheet.
+let _bbkVereineDaten = [];
 
-function bbkRenderVereinGrid(){
+async function bbkRenderVereinGrid(){
   const grid = document.getElementById('bbk-verein-grid');
-  grid.innerHTML = BBK_VEREINE.map(v => `
-    <button type="button" class="mv-card" style="cursor:pointer;" onclick="bbkVereinWaehlen('${v.key}')">
-      <div class="mv-card-logo">🏀</div>
-      <div class="mv-card-name">${v.name}</div>
-    </button>`).join('');
+  grid.innerHTML = '<div class="sb-hint">Lade Vereine…</div>';
+  try {
+    const resp = await fetch(GAS + '?action=getBbkVereine');
+    const data = await resp.json();
+    if(!data || !data.success || !data.vereine || !data.vereine.length){
+      grid.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+      return;
+    }
+    _bbkVereineDaten = data.vereine;
+    grid.innerHTML = _bbkVereineDaten.map(v => `
+      <button type="button" class="mv-card" style="cursor:pointer;" onclick="bbkVereinWaehlen('${v.key}')">
+        <div class="mv-card-logo">🏀</div>
+        <div class="mv-card-name">${esc(v.name)}</div>
+      </button>`).join('');
+  } catch(err){
+    grid.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+    console.warn('bbkRenderVereinGrid Fehler:', err);
+  }
 }
 
 function bbkVereinWaehlen(key){
-  const verein = BBK_VEREINE.find(v => v.key === key);
+  const verein = _bbkVereineDaten.find(v => v.key === key);
   if(!verein) return;
 
   document.getElementById('bbk-mannschaft-block').style.display = 'block';
@@ -890,7 +874,7 @@ function bbkVereinWaehlen(key){
   grid.innerHTML = verein.mannschaften.map(m => `
     <button type="button" class="mv-card" style="cursor:pointer;" onclick="bbkMannschaftWaehlen('${verein.name.replace(/'/g,"\\'")}','${m.replace(/'/g,"\\'")}')">
       <div class="mv-card-logo">🎽</div>
-      <div class="mv-card-name">${m}</div>
+      <div class="mv-card-name">${esc(m)}</div>
     </button>`).join('');
 
   // Sportdaten-Bereich zurücksetzen, bis eine Mannschaft gewählt wird
@@ -901,8 +885,8 @@ function bbkMannschaftWaehlen(vereinName, mannschaftName){
   document.getElementById('bbk-sportdaten-block').style.display = 'block';
   document.getElementById('bbk-aktive-mannschaft').textContent = vereinName + ' — ' + mannschaftName;
   document.getElementById('bbk-sportdaten-block').scrollIntoView({behavior:'smooth', block:'nearest'});
-  // Phase 3: Live-Daten laden (nur für Vereine mit hinterlegter Team-Zuordnung,
-  // siehe BBK_GIERATH_TEAM_MAP weiter unten)
+  // Phase 4: Live-Daten ausschließlich über die Sheet-getriebenen Endpunkte
+  // getBbkTabelle/getBbkErgebnisse/getBbkSpielplan (siehe weiter unten)
   bbkLadeSportdaten(vereinName, mannschaftName);
 }
 
@@ -944,154 +928,114 @@ function bbkSbTab(btn, panelId){
 }
 
 // ============================================================
-// Phase 3 — Live-Daten für die 3 Sportdaten-Panels
+// Phase 4 — Vollständig sheet-getriebene Sportdaten-Panels
 // Stand: 07.07.2026
 //
-// Nutzt AUSSCHLIESSLICH die bestehende zentrale GAS-API (gleiche
-// Architektur wie bei Scorpions: action=getTabellen / getErgebnisse,
-// beide bereits produktiv). Kein neuer Backend-Code nötig.
+// Ersetzt die bisherige Phase-3-Übergangslogik (BBK_GIERATH_TEAM_MAP +
+// Wiederverwendung von getTabellen/getErgebnisse). Ab jetzt läuft JEDER
+// Verein/JEDE Mannschaft über die gleichen, neuen Endpunkte:
+//   action=getBbkTabelle / getBbkErgebnisse / getBbkSpielplan
+// Diese lesen ausschließlich aus dem Sheet BBK_Spielbetrieb (Verein_Name +
+// Mannschaft_Name → TeamSL_URL). Kein JS-Mapping mehr nötig — ein neuer
+// Verein/eine neue Mannschaft wird ausschließlich über das Sheet ergänzt.
 //
-// Nur SG Rot-Weiß Gierath 48/62 e.V. hat aktuell eine hinterlegte
-// Team-Zuordnung (siehe BBK_GIERATH_TEAM_MAP). Alle anderen 31 Vereine
-// zeigen automatisch "Diese Daten werden derzeit ergänzt." — das ist
-// keine Fehlermeldung, sondern der bewusste, saubere Leerzustand.
-//
-// Spieltermine: es gibt noch keinen zentralen getSpielplan-Endpoint,
-// daher vorerst derselbe Platzhaltertext wie im Rest der Seite.
+// Jede Mannschaft im Sheet ist bereits eine eigene, konkrete Zeile
+// (z.B. "U16 Kreisliga (m)" und "U16 Kreisliga (w)" getrennt) — deshalb
+// entfällt die bisherige Mehrfach-Team-Schleife, es wird immer genau
+// 1 Datensatz pro Panel geladen.
 // ============================================================
 
-// Zuordnung BBK-Mannschaftslabel → Team_ID(s) in Website_Teams (Kunde V002).
-// U16 Kreisliga hat zwei reale Teams (U16m + U16w) und wird daher als
-// Liste mit 2 Einträgen geführt; alle anderen Vereine haben (noch) keinen
-// Eintrag und fallen automatisch auf "wird ergänzt" zurück.
-const BBK_GIERATH_TEAM_MAP = {
-  'SG Rot-Weiß Gierath 48/62 e.V.': {
-    'U12 Kreisliga': [ { teamId:'V002-T06', label:'U12' } ],
-    'U14 Kreisliga': [ { teamId:'V002-T05', label:'U14' } ],
-    'U16 Kreisliga': [ { teamId:'V002-T03', label:'U16m' }, { teamId:'V002-T04', label:'U16w' } ],
-    'U18 Kreisliga': [ { teamId:'V002-T02', label:'U18m' } ]
-    // U10 Kreisliga bewusst nicht enthalten — noch keine Liga_ID gemeldet
-  }
-};
-
-function bbkTeamsFuer_(vereinName, mannschaftName){
-  const vereinsMap = BBK_GIERATH_TEAM_MAP[vereinName];
-  if(!vereinsMap) return [];
-  return vereinsMap[mannschaftName] || [];
-}
-
 async function bbkLadeSportdaten(vereinName, mannschaftName){
-  const teams = bbkTeamsFuer_(vereinName, mannschaftName);
-
-  const tabWrap = document.querySelector('#bbk-sb-tabelle .sb-tabelle-wrap');
-  const ergWrap = document.querySelector('#bbk-sb-ergebnisse .sb-tabelle-wrap');
-  const planWrap = document.querySelector('#bbk-sb-spielplan .sb-tabelle-wrap');
-
-  if(!teams.length){
-    const hinweis = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
-    if(tabWrap) tabWrap.innerHTML = hinweis;
-    if(ergWrap) ergWrap.innerHTML = hinweis;
-    if(planWrap) planWrap.innerHTML = hinweis;
-    return;
-  }
-
-  // Spielplan: noch kein zentraler Endpoint vorhanden — bewusster,
-  // konsistenter Platzhalter wie beim Vereins-eigenen Spielplan-Tab.
-  if(planWrap) planWrap.innerHTML = '<div class="sb-hint">Spielplan wird vorbereitet – bald verfügbar.</div>';
-
-  if(tabWrap) tabWrap.innerHTML = '<div class="sb-hint">Lade Tabelle…</div>';
-  if(ergWrap) ergWrap.innerHTML = '<div class="sb-hint">Lade Ergebnisse…</div>';
-
-  const tabelleTeile = [];
-  const ergebnisseTeile = [];
-
-  for(const team of teams){
-    tabelleTeile.push(await bbkLadeEinzelTabelle_(team));
-    ergebnisseTeile.push(await bbkLadeEinzelErgebnisse_(team));
-  }
-
-  if(tabWrap) tabWrap.innerHTML = tabelleTeile.join('') || '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
-  if(ergWrap) ergWrap.innerHTML = ergebnisseTeile.join('') || '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+  bbkLadePanelSb_('bbk-sb-tabelle',    'getBbkTabelle',    'tabelle',    vereinName, mannschaftName, bbkRenderSbTabelle_);
+  bbkLadePanelSb_('bbk-sb-ergebnisse', 'getBbkErgebnisse', 'ergebnisse', vereinName, mannschaftName, bbkRenderSbErgebnisse_);
+  bbkLadePanelSb_('bbk-sb-spielplan',  'getBbkSpielplan',  'spielplan',  vereinName, mannschaftName, bbkRenderSbSpielplan_);
 }
 
-// ── Eine Tabelle für ein einzelnes Team laden (HTML-String zurückgeben) ──
-async function bbkLadeEinzelTabelle_(team){
-  const ueberschrift = `<div style="font-family:var(--font-headline);font-size:14px;font-weight:600;color:var(--primary);margin:18px 0 8px;">${esc(team.label)}</div>`;
+// ── Gemeinsame Lade-Logik für alle 3 Panels ───────────────
+async function bbkLadePanelSb_(panelId, action, feldName, vereinName, mannschaftName, renderFn){
+  const panel = document.getElementById(panelId);
+  if(!panel) return;
+  const wrap = panel.querySelector('.sb-tabelle-wrap') || panel;
+  wrap.innerHTML = '<div class="sb-hint">Lade Daten…</div>';
+
   try {
-    const url = GAS + '?action=getTabellen&kundenId=V002&teamId=' + encodeURIComponent(team.teamId);
+    const url = GAS + '?action=' + action
+      + '&vereinName=' + encodeURIComponent(vereinName)
+      + '&mannschaft=' + encodeURIComponent(mannschaftName);
     const resp = await fetch(url);
     const data = await resp.json();
+    const liste = data && data[feldName];
 
-    if(!data.success || !data.tabellen || !data.tabellen.length){
-      return ueberschrift + '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+    if(!data || !data.success || !liste || !liste.length || data.status === 'KEINE_DATEN'){
+      wrap.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+      return;
     }
-    const tab = data.tabellen[0];
-    const zeilen = tab.zeilen || [];
-    if(!zeilen.length){
-      return ueberschrift + '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
-    }
-
-    const suchname = (tab.suchname || team.label || '').toLowerCase();
-    const rows = zeilen.map((z,i) => {
-      const tn = fixU(z.Team_Name||z.teamName||z.teamname||z.Teamname||z.Team||'');
-      const suchwörter = suchname.split(' ').filter(w=>w.length>3);
-      const istWir = suchname && suchwörter.some(w=>tn.toLowerCase().includes(w.toLowerCase()));
-      return `<tr${istWir?' class="eigenes-team"':''}><td class="sd-rang">${esc(z.Rang||z.rang||i+1)}</td><td class="sd-teamname">${esc(tn)}${istWir?' ◄':''}</td><td class="r">${esc(z.Spiele||z.spiele||'')}</td><td class="r">${esc(z.Siege||z.siege||'')}</td><td class="r">${esc(z.Niederlagen||z.niederlagen||'')}</td><td class="r">${esc(z.Punkte||z.punkte||'')}</td></tr>`;
-    }).join('');
-
-    return ueberschrift + `<table class="sd-table">
-        <thead><tr><th class="sd-rang">#</th><th>Team</th><th class="r">Sp.</th><th class="r">S</th><th class="r">N</th><th class="r">Pkt.</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
+    renderFn(wrap, liste, vereinName);
   } catch(err){
-    console.warn('bbkLadeEinzelTabelle_ Fehler ('+team.teamId+'):', err);
-    return ueberschrift + '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+    wrap.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+    console.warn('bbkLadePanelSb_ Fehler ('+action+'):', err);
   }
 }
 
-// ── Ergebnisse für ein einzelnes Team laden (HTML-String zurückgeben) ──
-async function bbkLadeEinzelErgebnisse_(team){
-  const ueberschrift = `<div style="font-family:var(--font-headline);font-size:14px;font-weight:600;color:var(--primary);margin:18px 0 8px;">${esc(team.label)}</div>`;
-  try {
-    const url = GAS + '?action=getErgebnisse&kundenId=V002&teamId=' + encodeURIComponent(team.teamId);
-    const resp = await fetch(url);
-    const data = await resp.json();
+// ── Prüft, ob eine Zeile das "eigene" Team des gewählten Vereins ist ──
+// (Wortabgleich Vereinsname ↔ Teamname, wie beim Vereins-eigenen
+// Spielbetrieb — basketball-bund.net führt Gierath z.B. als "SG RW
+// Gierath", daher genügt ein Wortabgleich ohne zusätzliche Alias-Liste)
+function bbkIstEigenesTeamSb_(teamName, vereinName){
+  const tn = fixU(teamName || '').toLowerCase();
+  const woerter = String(vereinName || '').split(/\s+/).filter(w => w.length > 3);
+  return woerter.some(w => tn.includes(w.toLowerCase()));
+}
 
-    if(!data.success || !data.ergebnisse || !data.ergebnisse.length){
-      return ueberschrift + '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
-    }
+// ── Tabelle rendern ────────────────────────────────────────
+function bbkRenderSbTabelle_(wrap, rows, vereinName){
+  const zeilen = rows.map((r,i) => {
+    const teamName = fixU(r.Team_Name);
+    const eigen = bbkIstEigenesTeamSb_(teamName, vereinName);
+    return `<tr${eigen?' class="eigenes-team"':''}><td class="sd-rang">${esc(r.Rang||i+1)}</td><td class="sd-teamname">${esc(teamName)}${eigen?' ◄':''}</td><td class="r">${esc(r.Spiele||'')}</td><td class="r">${esc(r.Siege||'')}</td><td class="r">${esc(r.Niederlagen||'')}</td><td class="r">${esc(r.Punkte||'')}</td></tr>`;
+  }).join('');
 
-    const cards = data.ergebnisse.map(e=>{
-      const status = e.ergebnisStatus||e.Ergebnis_Status||'Unklar';
-      const statusClass = status==='Sieg'?'sieg':status==='Niederlage'?'niederlage':status==='Unentschieden'?'unentschieden':'unklar';
-      const heim = fixU(e.heim||e.Heim);
-      const gast = fixU(e.gast||e.Gast);
-      const endstand = ((e.endstand||e.Endstand||'')).replace(/\s/g,'');
-      const heimGast = e.vereinHeimGast||e.Verein_HeimGast||'';
-      const heimIstWir = heimGast ? heimGast==='Heim' : (team.label||'').toLowerCase().split(/\s+/).some(w=>w.length>2 && heim.toLowerCase().includes(w));
-      const rohdatum = e.datum||e.Datum||'';
-      const datumFormatiert = (()=>{
-        if(!rohdatum) return '';
-        if(/^\d{2}\.\d{2}\.\d{4}/.test(rohdatum)) return rohdatum.substring(0,10);
-        try{ const d=new Date(rohdatum); if(!isNaN(d)) return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}); }catch(e){}
-        return rohdatum;
-      })();
-      return `<div class="erg-card">
-        <div class="erg-date"><span class="erg-date-day">${esc(datumFormatiert)}</span></div>
-        <div class="erg-teams">
-          <div class="erg-team${heimIstWir?' eigenes':''}">${esc(heim)}</div>
-          <div class="erg-team${!heimIstWir?' eigenes':''}">${esc(gast)}</div>
-        </div>
-        <div class="erg-score">${esc(endstand||'–:–')}</div>
-        <div class="erg-status"><span class="erg-badge ${statusClass}">${esc(status)}</span></div>
-      </div>`;
-    }).join('');
+  wrap.innerHTML = `<table class="sd-table">
+      <thead><tr><th class="sd-rang">#</th><th>Team</th><th class="r">Sp.</th><th class="r">S</th><th class="r">N</th><th class="r">Pkt.</th></tr></thead>
+      <tbody>${zeilen}</tbody>
+    </table>`;
+}
 
-    return ueberschrift + `<div class="erg-grid">${cards}</div>`;
-  } catch(err){
-    console.warn('bbkLadeEinzelErgebnisse_ Fehler ('+team.teamId+'):', err);
-    return ueberschrift + '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
-  }
+// ── Ergebnisse rendern ─────────────────────────────────────
+function bbkRenderSbErgebnisse_(wrap, rows, vereinName){
+  const cards = rows.map(r => {
+    const heim = fixU(r.Heim);
+    const gast = fixU(r.Gast);
+    const heimIstWir = bbkIstEigenesTeamSb_(heim, vereinName);
+    const gastIstWir = bbkIstEigenesTeamSb_(gast, vereinName);
+    return `<div class="erg-card">
+      <div class="erg-date"><span class="erg-date-day">${esc(r.Datum)}</span></div>
+      <div class="erg-teams">
+        <div class="erg-team${heimIstWir?' eigenes':''}">${esc(heim)}</div>
+        <div class="erg-team${gastIstWir?' eigenes':''}">${esc(gast)}</div>
+      </div>
+      <div class="erg-score">${esc(r.Ergebnis || '–:–')}</div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML = `<div class="erg-grid">${cards}</div>`;
+}
+
+// ── Spielplan rendern ──────────────────────────────────────
+function bbkRenderSbSpielplan_(wrap, rows, vereinName){
+  const cards = rows.map(r => {
+    const heim = fixU(r.Heim);
+    const gast = fixU(r.Gast);
+    const heimIstWir = bbkIstEigenesTeamSb_(heim, vereinName);
+    const gastIstWir = bbkIstEigenesTeamSb_(gast, vereinName);
+    return `<div class="erg-card">
+      <div class="erg-date"><span class="erg-date-day">${esc(r.Datum)}</span></div>
+      <div class="erg-teams">
+        <div class="erg-team${heimIstWir?' eigenes':''}">${esc(heim)}</div>
+        <div class="erg-team${gastIstWir?' eigenes':''}">${esc(gast)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML = `<div class="erg-grid">${cards}</div>`;
 }
 
 bbkRenderVereinGrid();
