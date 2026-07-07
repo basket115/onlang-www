@@ -1038,8 +1038,12 @@ function bbkRenderSbSpielplan_(wrap, rows, vereinName){
   wrap.innerHTML = `<div class="erg-grid">${cards}</div>`;
 }
 
-bbkRenderVereinGrid();
-bbkRenderLigaGrid();
+// Erst starten, wenn die gesamte Seite geparst ist — GAS wird erst weiter
+// unten in der Datei definiert, daher NICHT sofort synchron aufrufen.
+window.addEventListener('DOMContentLoaded', () => {
+  bbkRenderVereinGrid();
+  bbkRenderLigaGrid();
+});
 </script>
 
 <!-- 6. TEAMS -->
