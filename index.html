@@ -1003,7 +1003,20 @@ function bbkRenderSbTabelle_(wrap, rows, vereinName){
 
 // ── Ergebnisse rendern ─────────────────────────────────────
 function bbkRenderSbErgebnisse_(wrap, rows, vereinName){
-  const cards = rows.map(r => {
+  // Nur Spiele zeigen, in denen der gewählte Verein tatsächlich Heim oder
+  // Gast ist — Action=103 liefert sonst die komplette Liga-Ergebnisliste.
+  const eigene = rows.filter(r => {
+    const heim = fixU(r.Heim);
+    const gast = fixU(r.Gast);
+    return bbkIstEigenesTeamSb_(heim, vereinName) || bbkIstEigenesTeamSb_(gast, vereinName);
+  });
+
+  if(!eigene.length){
+    wrap.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+    return;
+  }
+
+  const cards = eigene.map(r => {
     const heim = fixU(r.Heim);
     const gast = fixU(r.Gast);
     const heimIstWir = bbkIstEigenesTeamSb_(heim, vereinName);
@@ -1022,7 +1035,20 @@ function bbkRenderSbErgebnisse_(wrap, rows, vereinName){
 
 // ── Spielplan rendern ──────────────────────────────────────
 function bbkRenderSbSpielplan_(wrap, rows, vereinName){
-  const cards = rows.map(r => {
+  // Gleicher Filter wie bei Ergebnisse — Action=101 liefert sonst den
+  // kompletten Liga-Spielplan aller Teams.
+  const eigene = rows.filter(r => {
+    const heim = fixU(r.Heim);
+    const gast = fixU(r.Gast);
+    return bbkIstEigenesTeamSb_(heim, vereinName) || bbkIstEigenesTeamSb_(gast, vereinName);
+  });
+
+  if(!eigene.length){
+    wrap.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+    return;
+  }
+
+  const cards = eigene.map(r => {
     const heim = fixU(r.Heim);
     const gast = fixU(r.Gast);
     const heimIstWir = bbkIstEigenesTeamSb_(heim, vereinName);
