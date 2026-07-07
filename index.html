@@ -621,7 +621,7 @@ img{display:block;max-width:100%;}
 <!-- 1. HEADER -->
 <header class="hdr">
   <div class="hdr-in">
-    <a class="hdr-brand" href="#"><div id="hdr-logo" class="brand-ph">ON</div><div><div class="brand-name" id="hdr-name">Verein</div><div class="brand-sub" id="hdr-sub">Offizielle Website</div></div></a>
+    <a class="hdr-brand" href="#"><img id="hdr-logo" class="brand-logo" src="https://bbk-basketball.netlify.app/bbk-logo.png" alt="Basketballkreis Düsseldorf/Neuss" onerror="this.outerHTML='<div class=brand-ph>BK</div>'"><div><div class="brand-name" id="hdr-name">Verein</div><div class="brand-sub" id="hdr-sub">Offizielle Website</div></div></a>
     <nav class="hdr-nav" id="hdr-nav">
       <a class="nav-a on" href="#start">Startseite</a>
       <a class="nav-a" href="#aktuelles">Aktuelles</a>
@@ -691,42 +691,79 @@ img{display:block;max-width:100%;}
     <div style="font-size:14px;color:var(--muted);margin-top:4px;max-width:640px;">Der Basketballkreis Düsseldorf/Neuss verbindet rund 20 Mitgliedsvereine — jeder mit eigener ONLANG-Vereinsplattform.</div>
   </div>
   <div class="teams-row" id="mv-grid">
-    <!-- Echte BBK-Mitgliedsvereine (Stand 05.07.2026) – dieselbe Kartenstruktur wird spaeter automatisch aus Kunden_Master befuellt -->
-    <!-- href="#" ist Platzhalter – wird spaeter auf die jeweilige Vereinsplattform gesetzt -->
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">DJK TUSA 06 Düsseldorf</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">ART 77/90 Düsseldorf</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">TV Grafenberg 1888 e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">TuS Maccabi Düsseldorf e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">SSV Düsseldorf-Knittkuhl 1972</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Turngemeinde v.1881 Düsseldorf</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">ISD Sportverein e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">SV Alte Freunde 95 Düsseldorf</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Weiberkram e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Giants Düsseldorf e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Dynamic Squad Basketball Academy</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">BC Düsseldorf Nord e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Hochschulsport Düsseldorf e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Greek Baskets Düsseldorf</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Black Eagles e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Capitol Bascats Düsseldorf e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">STV Rethel e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">LDH Sportverein</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">3x3 Academy Düsseldorf e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">TSV Urdenbach 1894 e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">SG ART Giants Düsseldorf</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">Osterather TV 1893 e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">TG Neuss von 1848 e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">TSV Norf e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">VfR 1912 Büttgen e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">SG Kaarst e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">TSV Bayer Dormagen e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">BSG Blau-Weiß Grevenbroich</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">SV 1930 Rosellen e. V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">FSV Jüchen 1984 e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">SG Rot-Weiß Gierath 48/62 e.V.</div></a>
-    <a class="mv-card" href="#"><div class="mv-card-logo">🏀</div><div class="mv-card-name">BG Kaarst-Büttgen</div></a>
+    <div class="sb-hint">Lade Vereine…</div>
   </div>
 </div></section>
+
+<script>
+// ============================================================
+// Mitgliedsvereine — Schritt 4 (07.07.2026)
+// Lädt dieselbe Vereinsliste wie Spielbetrieb aus dem Sheet
+// BBK_Spielbetrieb (über getBbkVereine). Bewusst UNABHÄNGIG vom
+// Spielbetrieb-Code (kein gemeinsamer Zustand, keine gemeinsamen
+// Funktionen) — dort wird nichts verändert.
+//
+// Später: sobald das Sheet zusätzliche Spalten für Website/App/
+// Social-Links führt, können diese hier einfach ergänzt werden
+// (v.website, v.app, v.social o.ä.) — ohne dass diese Funktion
+// nochmal umgebaut werden muss.
+// ============================================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const grid = document.getElementById('mv-grid');
+  if(!grid) return;
+
+  // Bekannte Vereinslogos (Stand 07.07.2026). Nur eindeutig zuordenbare
+  // Logos sind hier eingetragen — bei Unsicherheit bleibt bewusst das
+  // Basketball-Icon als Fallback, statt falsch zuzuordnen.
+  const BBK_VEREIN_LOGOS = {
+    'Osterather TV 1893 e. V.': 'logos/Logo-OTV_300326.png',
+    'STV Rethel e.V.': 'logos/Logo-Rethel_300326.png',
+    'Turngemeinde v.1881 Düsseldorf': 'logos/Logo-TG81_300326.png',
+    'DJK TUSA 06 Düsseldorf': 'logos/Logo-TUSA_300326.png',
+    'ART 77/90 Düsseldorf': 'logos/Logo-ART_Düsseldorf_300326.png',
+    'SG ART Giants Düsseldorf': 'logos/Logo-ART_Giants_300326.png',
+    'Capitol Bascats Düsseldorf e.V.': 'logos/Logo-Capitol_300326.png',
+    'TSV Bayer Dormagen e. V.': 'logos/Logo-Dormagen_300326.png',
+    'FSV Jüchen 1984 e.V.': 'logos/Logo-FSV_Jüchen_300326.png',
+    'Greek Baskets Düsseldorf': 'logos/Logo-Greek_300326.png',
+    'ISD Sportverein e. V.': 'logos/Logo-ISD_300326.png',
+    'BG Kaarst-Büttgen': 'logos/Logo-Kaarst-Büttgen_300326.png',
+    'TuS Maccabi Düsseldorf e. V.': 'logos/Logo-Maccabi_300326.png',
+    'BSG Blau-Weiß Grevenbroich': 'logos/Logo-Elephants_300326.png',
+    'SG Rot-Weiß Gierath 48/62 e.V.': 'logos/Logo-Scorpions-Gierath.svg'
+    // "Logo-Stürzelberg" bewusst NICHT zugeordnet — Verein existiert
+    // aktuell nicht / hat keine Mannschaften im Spielbetrieb (07.07.2026)
+  };
+
+  try {
+    const resp = await fetch(GAS + '?action=getBbkVereine');
+    const data = await resp.json();
+
+    if(!data || !data.success || !data.vereine || !data.vereine.length){
+      grid.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+      return;
+    }
+
+    grid.innerHTML = data.vereine.map(v => {
+      // Zukünftige Zusatzdaten (Website/App/Social) — solange das Sheet
+      // sie noch nicht liefert, bleibt es beim reinen Namen + Icon.
+      const link = v.website || v.web || '';
+      const istLink = link && link.trim();
+      const logoPfad = BBK_VEREIN_LOGOS[v.name];
+      const logoHtml = logoPfad
+        ? `<img src="${esc(logoPfad)}" alt="${esc(v.name)}" style="width:56px;height:56px;border-radius:50%;object-fit:contain;background:var(--card-2);" onerror="this.outerHTML='🏀'">`
+        : '🏀';
+      return `<a class="mv-card" href="${istLink ? esc(link) : '#'}"${istLink ? ' target="_blank" rel="noopener"' : ''}>
+          <div class="mv-card-logo">${logoHtml}</div>
+          <div class="mv-card-name">${esc(v.name)}</div>
+        </a>`;
+    }).join('');
+  } catch(err){
+    grid.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
+    console.warn('Mitgliedsvereine Fehler:', err);
+  }
+});
+</script>
 
 <!-- 5. HERO / AKTUELLE NACHRICHTEN (bestehende News-Logik, unverändert funktional) -->
 <section class="sec-sm" id="aktuelles"><div class="wrap">
