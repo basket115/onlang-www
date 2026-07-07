@@ -1286,13 +1286,13 @@ window.addEventListener('DOMContentLoaded', () => {
   <div class="sec-head">
     <div>
       <div class="sec-title">Über den BBK</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:4px;max-width:640px;">Der Basketballkreis Düsseldorf/Neuss ist die zentrale Organisation für rund 20 Mitgliedsvereine. Der Basketballkreis informiert. Die Vereine kommunizieren. ONLANG verbindet beides.</div>
+      <div id="bbk-beschreibung" style="font-size:13px;color:var(--muted);margin-top:4px;max-width:640px;">Der Basketballkreis Düsseldorf/Neuss ist die zentrale Organisation für rund 20 Mitgliedsvereine. Der Basketballkreis informiert. Die Vereine kommunizieren. ONLANG verbindet beides.</div>
     </div>
   </div>
 
   <div style="margin-bottom:36px;">
     <div style="font-family:var(--font-headline);font-size:16px;font-weight:600;text-transform:uppercase;margin-bottom:6px;">Vorstand</div>
-    <div style="font-size:12px;color:var(--faint);margin-bottom:16px;">Vorläufige Angaben — Pflege über Google Sheet/Studio ist vorbereitet, aber noch nicht angebunden.</div>
+    <div id="vorstand-hinweis" style="font-size:12px;color:var(--faint);margin-bottom:16px;">Vorläufige Angaben — Pflege über Google Sheet/Studio ist vorbereitet, aber noch nicht angebunden.</div>
     <div class="teams-row" id="vorstand-grid">
       <div class="mv-card" style="width:210px;">
         <div class="mv-card-logo">👤</div>
@@ -1335,6 +1335,109 @@ window.addEventListener('DOMContentLoaded', () => {
 
   <div class="ko-grid" id="ko-grid"></div>
 </div></section>
+
+<script>
+// ============================================================
+// Phase 5 (Beta) — Allgemein / Vorstand / Kontakte
+// Stand: 07.07.2026
+//
+// Komplett EIGENSTÄNDIG (Präfix bbk5), lädt bei DOMContentLoaded aus
+// den neuen Endpunkten getBbkAllgemein / getBbkVorstand / getBbkKontakte.
+// Überschreibt NUR die BBK-spezifischen Platzhalter-Bereiche (Vorstand-
+// Grid, Kontakt-Grid, Beschreibung, Header-Name) — rührt sonst nichts an.
+// Fehlt ein Wert oder schlägt der Abruf fehl: die bisherigen statischen
+// Platzhalter bleiben einfach stehen (kein Absturz, kein Fehlerzustand).
+// ============================================================
+
+window.addEventListener('DOMContentLoaded', async () => {
+  // ── Allgemein ──
+  try {
+    const resp = await fetch(GAS + '?action=getBbkAllgemein');
+    const data = await resp.json();
+    if(data && data.success && data.data && Object.keys(data.data).length){
+      const a = data.data;
+      if(a.Kreisname){
+        const hn = document.getElementById('hdr-name');
+        if(hn) hn.textContent = a.Kreisname;
+        document.title = a.Kreisname + ' – SportMagazin';
+      }
+      if(a.Beschreibung){
+        const bd = document.getElementById('bbk-beschreibung');
+        if(bd) bd.textContent = a.Beschreibung;
+      }
+    }
+  } catch(err){ console.warn('bbk5 Allgemein Fehler:', err); }
+
+  // ── Vorstand ──
+  try {
+    const resp = await fetch(GAS + '?action=getBbkVorstand');
+    const data = await resp.json();
+    const grid = document.getElementById('vorstand-grid');
+    const hinweis = document.getElementById('vorstand-hinweis');
+    if(data && data.success && data.vorstand && data.vorstand.length && grid){
+      grid.innerHTML = data.vorstand.map(p => {
+        const name = p.Name || 'Name folgt';
+        const funktion = p.Funktion || '';
+        const tel = p.Telefon || '';
+        const email = p.Email || '';
+        return `<div class="mv-card" style="width:210px;">
+          <div class="mv-card-logo">👤</div>
+          <div class="mv-card-name">${esc(name)}</div>
+          <div style="font-size:11px;color:var(--muted);text-transform:none;margin-bottom:8px;">${esc(funktion)}</div>
+          <div style="font-size:11px;color:var(--faint);text-transform:none;line-height:1.5;">
+            ${email ? `<a href="mailto:${esc(email)}" style="color:var(--faint);">${esc(email)}</a><br>` : ''}
+            ${tel ? `<a href="tel:${esc(tel)}" style="color:var(--faint);">${esc(tel)}</a>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+      if(hinweis) hinweis.remove();
+    }
+  } catch(err){ console.warn('bbk5 Vorstand Fehler:', err); }
+
+  // ── Kontakte ──
+  try {
+    const resp = await fetch(GAS + '?action=getBbkKontakte');
+    const data = await resp.json();
+    if(data && data.success && data.data && Object.keys(data.data).length){
+      const k = data.data;
+      const grid = document.getElementById('ko-grid');
+      if(grid){
+        const web = k.Website || '';
+        const email = k.Email || '';
+        const tel = k.Telefon || '';
+        const app = k.Vereins_App || '';
+        const soc = [];
+        if(k.Facebook) soc.push(`<a class="ko-soc-a" href="${esc(k.Facebook)}" target="_blank" rel="noopener" title="Facebook">📘</a>`);
+        if(k.Instagram) soc.push(`<a class="ko-soc-a" href="${esc(k.Instagram)}" target="_blank" rel="noopener" title="Instagram">📸</a>`);
+        if(k.YouTube) soc.push(`<a class="ko-soc-a" href="${esc(k.YouTube)}" target="_blank" rel="noopener" title="YouTube">▶️</a>`);
+
+        grid.innerHTML = `
+          <div class="ko-card">
+            <div class="ko-card-icon">🌐</div>
+            <div class="ko-card-title">Website</div>
+            <div class="ko-card-content">
+              ${web ? `<a href="${esc(web)}" target="_blank" rel="noopener">${esc(web.replace(/https?:\/\//,''))}</a>` : '–'}
+              ${email ? `<br><a href="mailto:${esc(email)}">${esc(email)}</a>` : ''}
+              ${tel ? `<br><a href="tel:${esc(tel)}">${esc(tel)}</a>` : ''}
+            </div>
+          </div>
+          <div class="ko-card">
+            <div class="ko-card-icon">📱</div>
+            <div class="ko-card-title">Social Media</div>
+            <div class="ko-card-content">${soc.length ? '' : 'Noch keine Social-Media-Profile hinterlegt.'}</div>
+            ${soc.length ? `<div class="ko-soc-row">${soc.join('')}</div>` : ''}
+          </div>
+          <div class="ko-card">
+            <div class="ko-card-icon">📲</div>
+            <div class="ko-card-title">Vereins-App</div>
+            <div class="ko-card-content">Alle Inhalte direkt auf deinem Smartphone – immer aktuell.</div>
+            ${app ? `<div style="margin-top:16px;"><a href="${esc(app)}" target="_blank" rel="noopener" class="app-direct-btn" style="font-size:12px;padding:10px 18px;">Zur App →</a></div>` : ''}
+          </div>`;
+      }
+    }
+  } catch(err){ console.warn('bbk5 Kontakte Fehler:', err); }
+});
+</script>
 
 <!-- 12. FOOTER -->
 <footer class="ftr">
