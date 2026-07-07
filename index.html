@@ -690,12 +690,34 @@ img{display:block;max-width:100%;}
     <div class="sec-title">Mitgliedsvereine</div>
     <div style="font-size:14px;color:var(--muted);margin-top:4px;max-width:640px;">Der Basketballkreis Düsseldorf/Neuss verbindet rund 20 Mitgliedsvereine — jeder mit eigener ONLANG-Vereinsplattform.</div>
   </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <input type="text" id="mv-suche" placeholder="🔍 Verein suchen…" oninput="bbkFilterKarten_('mv-grid', this.value)"
+      style="flex:1;min-width:200px;max-width:360px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:#fff;font-size:14px;">
+    <select id="mv-verein-dropdown" onchange="if(this.value) bbkSpringeZuKarte_('mv-grid', this.value)"
+      style="flex:1;min-width:200px;max-width:360px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:#fff;font-size:14px;">
+      <option value="">— Oder Verein aus Liste wählen —</option>
+    </select>
+  </div>
   <div class="teams-row" id="mv-grid">
     <div class="sb-hint">Lade Vereine…</div>
   </div>
 </div></section>
 
 <script>
+// ── Generische Such-/Filterfunktion für Vereinskarten-Reihen ──
+// Wird sowohl von Spielbetrieb (bbk-verein-grid) als auch von
+// Mitgliedsvereine (mv-grid) verwendet. Blendet Karten ein/aus,
+// ohne das Grid neu zu laden — rein clientseitiger Textabgleich.
+function bbkFilterKarten_(gridId, query){
+  const grid = document.getElementById(gridId);
+  if(!grid) return;
+  const q = String(query||'').trim().toLowerCase();
+  grid.querySelectorAll('.mv-card').forEach(card => {
+    const name = (card.querySelector('.mv-card-name')?.textContent || '').toLowerCase();
+    card.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+}
+
 // ============================================================
 // Mitgliedsvereine — Schritt 4 (07.07.2026)
 // Lädt dieselbe Vereinsliste wie Spielbetrieb aus dem Sheet
@@ -753,16 +775,36 @@ window.addEventListener('DOMContentLoaded', async () => {
       const logoHtml = logoPfad
         ? `<img src="${esc(logoPfad)}" alt="${esc(v.name)}" style="width:56px;height:56px;border-radius:50%;object-fit:contain;background:var(--card-2);" onerror="this.outerHTML='🏀'">`
         : '🏀';
-      return `<a class="mv-card" href="${istLink ? esc(link) : '#'}"${istLink ? ' target="_blank" rel="noopener"' : ''}>
+      return `<a class="mv-card" data-name="${esc(v.name)}" href="${istLink ? esc(link) : '#'}"${istLink ? ' target="_blank" rel="noopener"' : ''}>
           <div class="mv-card-logo">${logoHtml}</div>
           <div class="mv-card-name">${esc(v.name)}</div>
         </a>`;
     }).join('');
+
+    const mvDd = document.getElementById('mv-verein-dropdown');
+    if(mvDd){
+      mvDd.innerHTML = '<option value="">— Oder Verein aus Liste wählen —</option>' +
+        data.vereine.map(v => `<option value="${esc(v.name)}">${esc(v.name)}</option>`).join('');
+    }
   } catch(err){
     grid.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
     console.warn('Mitgliedsvereine Fehler:', err);
   }
 });
+
+// ── Springt zur passenden Karte und hebt sie kurz hervor ──
+// (aktuell für Mitgliedsvereine-Dropdown genutzt; generisch für jedes
+// Grid mit data-name-Attribut auf den Karten)
+function bbkSpringeZuKarte_(gridId, name){
+  const grid = document.getElementById(gridId);
+  if(!grid) return;
+  const card = grid.querySelector(`[data-name="${CSS.escape(name)}"]`);
+  if(!card) return;
+  card.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  card.style.transition = 'box-shadow .3s';
+  card.style.boxShadow = '0 0 0 3px var(--primary)';
+  setTimeout(() => { card.style.boxShadow = ''; }, 1500);
+}
 </script>
 
 <!-- 5. HERO / AKTUELLE NACHRICHTEN (bestehende News-Logik, unverändert funktional) -->
@@ -837,6 +879,14 @@ window.addEventListener('DOMContentLoaded', async () => {
   <div id="bbk-modus-verein" style="display:none;">
     <!-- Schritt 1: Verein auswählen -->
     <div class="sb-tabelle-label" style="margin-bottom:10px;">Verein auswählen</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+      <input type="text" id="bbk-verein-suche" placeholder="🔍 Verein suchen…" oninput="bbkFilterKarten_('bbk-verein-grid', this.value)"
+        style="flex:1;min-width:200px;max-width:360px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:#fff;font-size:14px;">
+      <select id="bbk-verein-dropdown" onchange="if(this.value) bbkVereinWaehlen(this.value)"
+        style="flex:1;min-width:200px;max-width:360px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:#fff;font-size:14px;">
+        <option value="">— Oder Verein aus Liste wählen —</option>
+      </select>
+    </div>
     <div class="teams-row" id="bbk-verein-grid" style="margin-bottom:28px;"></div>
 
     <!-- Schritt 2: Mannschaftskarten des gewählten Vereins -->
@@ -890,10 +940,16 @@ async function bbkRenderVereinGrid(){
     }
     _bbkVereineDaten = data.vereine;
     grid.innerHTML = _bbkVereineDaten.map(v => `
-      <button type="button" class="mv-card" style="cursor:pointer;" onclick="bbkVereinWaehlen('${v.key}')">
+      <button type="button" class="mv-card" data-name="${esc(v.name)}" style="cursor:pointer;" onclick="bbkVereinWaehlen('${v.key}')">
         <div class="mv-card-logo">🏀</div>
         <div class="mv-card-name">${esc(v.name)}</div>
       </button>`).join('');
+
+    const dd = document.getElementById('bbk-verein-dropdown');
+    if(dd){
+      dd.innerHTML = '<option value="">— Oder Verein aus Liste wählen —</option>' +
+        _bbkVereineDaten.map(v => `<option value="${esc(v.key)}">${esc(v.name)}</option>`).join('');
+    }
   } catch(err){
     grid.innerHTML = '<div class="sb-hint">Diese Daten werden derzeit ergänzt.</div>';
     console.warn('bbkRenderVereinGrid Fehler:', err);
