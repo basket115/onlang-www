@@ -1784,7 +1784,7 @@ function renderHero(beitraege,br){
   const teaser=m.teaser||stripH(m.spielbericht).substring(0,180);
   const datum=fmtD(m.datum);
   const kat=m.beitragsart||m.kategorie||'News';
-  const bildSrc=optimiereBildUrl(m.bild_url,'website');
+  const bildSrc=(m.bild_typ==='grafik'||m.bild_typ==='logo')?m.bild_url:optimiereBildUrl(m.bild_url,'website');
   const bildKlasse='hero-bg bild-'+(m.bild_typ||'foto');
 
   // Hero-Hauptbereich: Bild oben, Text darunter
