@@ -2343,7 +2343,7 @@ function renderNews(beitraege){
 
 function zeigeArtikel(spiel_id){
   const b=_alle.find(x=>x.spiel_id===spiel_id);if(!b)return;
-  document.getElementById('artikel-bild-wrap').innerHTML=b.bild_url?`<img src="${esc(optimiereBildUrl(b.bild_url,'website'))}" alt="" style="width:100%;max-height:420px;object-fit:cover;" onerror="this.remove()">`:'' ;
+  document.getElementById('artikel-bild-wrap').innerHTML=b.bild_url?`<img src="${esc((b.bild_typ==='grafik'||b.bild_typ==='logo')?b.bild_url:optimiereBildUrl(b.bild_url,'website'))}" alt="" style="width:100%;max-height:420px;object-fit:${(b.bild_typ==='grafik'||b.bild_typ==='logo')?'contain':'cover'};background:var(--bg);" onerror="this.remove()">`:'' ;
   document.getElementById('artikel-tag').textContent=b.beitragsart||b.kategorie||'News';
   document.getElementById('artikel-datum').textContent=fmtD(b.datum)?'📅 '+fmtD(b.datum):'';
   document.getElementById('artikel-titel').textContent=b.headline||'';
