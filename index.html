@@ -839,6 +839,15 @@ window.GAS_URL = 'https://script.google.com/macros/s/AKfycbyUP8wHkErf7a20HJemThw
       el.setAttribute('aria-label', tr(el.getAttribute('data-i18n-aria-label')));
     });
     document.documentElement.setAttribute('lang', aktuelleWebsiteSprache);
+    // HU: "Kostenlos testen" / "Demo ansehen" CTAs zeigen bei aktiver HU-Sprache auf
+    // die ungarische Anmeldeseite. DE/EN behalten ihr Original-Ziel unverändert.
+    var HU_ANMELDUNG_URL = 'https://onlang-anmeldung-hu.netlify.app/';
+    document.querySelectorAll('a[data-i18n="web_btn_kostenlos_testen"], [data-i18n="web_hero_button_primary"]').forEach(function(el){
+      var a = el.tagName === 'A' ? el : el.closest('a');
+      if (!a) return;
+      if (!a.hasAttribute('data-href-default')) a.setAttribute('data-href-default', a.getAttribute('href'));
+      a.setAttribute('href', aktuelleWebsiteSprache === 'hu' ? HU_ANMELDUNG_URL : a.getAttribute('data-href-default'));
+    });
   };
 
   window.ladeWebsiteTranslations = function(lang){
