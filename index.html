@@ -853,7 +853,7 @@ window.GAS_URL = 'https://script.google.com/macros/s/AKfycbx7gnTorNAQz21x3vwZOFQ
   window.ladeWebsiteTranslations = function(lang){
     // Texte aus dem eigenen Ordner texte/ (de.json, hu.json, en.json) –
     // unveränderte Kopie der GAS-Antwort von getTranslations, kein Abruf
-    // bei script.google.com mehr.
+    // bei Google Apps Script mehr.
     var url = 'texte/' + encodeURIComponent(lang) + '.json';
     fetch(url).then(function(r){ return r.json(); }).then(function(res){
       if (res && res.success && res.translations && Object.keys(res.translations).length) {
@@ -1048,7 +1048,11 @@ function istFreigegeben(b){
       <p class="sec-sub" data-i18n="web_kontakt_subtitle">Wir beraten Sie gerne unverbindlich — schreiben Sie uns.</p>
     </div>
     <div class="kontakt-in">
-      <form id="kontaktForm">
+      <!-- Netlify Forms: Netlify erkennt dieses Formular beim Deploy am Namen
+           "kontakt". Das Feld "bot-field" ist die Spamfalle (Honeypot): Menschen
+           sehen es nicht, ausgefüllte Einsendungen verwirft Netlify. -->
+      <form id="kontaktForm" name="kontakt" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <p style="display:none;"><label>Bitte nicht ausfüllen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
         <div class="kf-group"><label class="kf-label" data-i18n="web_contact_name">Name</label><input class="kf-input" type="text" name="name" required></div>
         <div class="kf-group"><label class="kf-label" data-i18n="web_contact_email">E-Mail</label><input class="kf-input" type="email" name="email" required></div>
         <div class="kf-group"><label class="kf-label" data-i18n="web_contact_verein">Verein / Organisation</label><input class="kf-input" type="text" name="verein"></div>
@@ -1169,9 +1173,8 @@ function istFreigegeben(b){
   els.forEach(function(el){ io.observe(el); });
 })();
 
-// Kontaktformular – sendet an ONLANG Apps Script Backend
+// Kontaktformular – sendet an Netlify Forms (Formular "kontakt")
 (function(){
-  const GAS_KONTAKT_URL = 'https://script.google.com/macros/s/AKfycby8Q7fZMXwaqVZkesCV-uHIY4Q6U75LEcQjw2eiKVFr0NWz2lNObSxkF474iGnvaM1WVw/exec';
   const form = document.getElementById('kontaktForm');
   const btn = document.getElementById('kfSubmitBtn');
   const status = document.getElementById('kfStatus');
@@ -1203,14 +1206,20 @@ function istFreigegeben(b){
       btn.textContent = tr('web_contact_sending');
       showStatus('pending', tr('web_contact_sending_message'));
 
-      fetch(GAS_KONTAKT_URL, {
+      // Netlify nimmt die Einsendung als normales Formular entgegen:
+      // "form-name" nennt das Formular, "bot-field" ist die Spamfalle.
+      const body = new URLSearchParams(Object.assign({
+        'form-name': form.getAttribute('name'),
+        'bot-field': form.elements['bot-field'].value
+      }, data));
+
+      fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(data)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
       })
-      .then(function(resp){ return resp.json(); })
-      .then(function(result){
-        if(result.success){
+      .then(function(resp){
+        if(resp.ok){
           showStatus('ok', '✓ ' + tr('web_contact_success'));
           form.reset();
         } else {
