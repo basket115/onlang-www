@@ -707,12 +707,6 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 </div>
 
 <script>
-// Globale GAS-URL – nur noch für die News. Die Texte (i18n) kommen aus
-// dem Ordner texte/. Muss vor allen Skripten stehen, die sie verwenden.
-window.GAS_URL = 'https://script.google.com/macros/s/AKfycbx7gnTorNAQz21x3vwZOFQl2bkP2t1QKLppcUSQ_-CQywRS-36AZOeqDDMJg3uXVa2ntA/exec';
-</script>
-
-<script>
 // ══════════════════════════════════════════════════════════════
 // MEHRSPRACHIGKEIT WEBSITE (i18n) – V1 Grundsystem
 // ══════════════════════════════════════════════════════════════
@@ -897,35 +891,43 @@ window.GAS_URL = 'https://script.google.com/macros/s/AKfycbx7gnTorNAQz21x3vwZOFQ
 
 <script>
 (function(){
+  // News kommen aus Supabase (Tabelle beitraege, Kunde V001 = ONLANG).
+  // Der Schlüssel ist der ÖFFENTLICHE (publishable) Schlüssel: er darf im
+  // Browser stehen und kann nur lesen, was die Datenbank-Regeln freigeben.
+  // Der geheime Schlüssel gehört nie in diese Datei.
+  var SUPABASE_URL = 'https://ccwlglszhwvbhzhdtxtl.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_hFwqCDf1pMIYkXMq7a0jyQ_XcweL-mS';
   var KUNDEN_ID = 'V001';
+  var MAX_NEWS = 3;
+  var TEASER_LAENGE = 140;
   var _alle = [];
 
   var EMOJIS = {'Unternehmensnews':'📣','Produkt':'🚀','Partnerschaft':'🤝','KI':'🤖','Sport':'🏀','Event':'🎉','default':'📰'};
 
   function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
 
-  function normBeitrag(b){return{
-    spiel_id:    b.Spiel_ID    ||b.spiel_id    ||'',
-    headline:    b.Headline    ||b.headline    ||'',
-    teaser:      b.Teaser      ||b.teaser      ||'',
-    spielbericht:b.Spielbericht||b.spielbericht||'',
-    bild_url:    b.Bild_URL    ||b.bild_url    ||'',
-    video_url:   b.Video_URL   ||b.video_url   ||'',
-    kategorie:   b.Kategorie   ||b.kategorie   ||'',
-    beitragsart: b.Beitragsart ||b.beitragsart ||b.App||b.app||'',
-    datum:       b.Freigegeben_Am||b.freigegeben_am||b.Erstellt_Am||b.erstellt_am||'',
-    status:      b.Verein_Status||b.verein_status||'',
-    website_status: b.Website_Status||b.website_status||''
-  };}
+  // Teaser = Anfang des Textes: HTML-Zeichen und Zeilenumbrüche raus,
+  // am Wortende gekürzt. Kurze Texte bleiben ganz.
+  function kurzText(txt){
+    var s=String(txt||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+    if(s.length<=TEASER_LAENGE)return s;
+    var k=s.slice(0,TEASER_LAENGE);
+    var i=k.lastIndexOf(' ');
+    return (i>TEASER_LAENGE*0.6?k.slice(0,i):k)+'…';
+  }
 
-function istFreigegeben(b){
-    // Case-insensitive nach Variante 2 (wie im Studio-Backend):
-    // String(...).trim().toUpperCase() === 'JA' – unabhängig davon, ob im
-    // Sheet "Ja", "ja", "JA" oder mit Leerzeichen davor/danach steht.
-    var s = String(b.status||'').trim().toUpperCase();
-    var w = String(b.website_status||'').trim().toUpperCase();
-    return (s==='FREIGEGEBEN' || s==='VERÖFFENTLICHT') && w==='JA';
-}
+  // Supabase-Zeile -> Felder, mit denen die Anzeige arbeitet.
+  // Datum: datum, sonst erstellt_am.
+  function normBeitrag(b){return{
+    spiel_id:    b.id        ||'',
+    headline:    b.titel     ||'',
+    teaser:      kurzText(b.text),
+    spielbericht:b.text      ||'',
+    bild_url:    b.bild_url  ||'',
+    video_url:   b.video_url ||'',
+    kategorie:   b.kategorie ||'',
+    datum:       b.datum||b.erstellt_am||''
+  };}
 
   function fmtD(str){
     if(!str)return'';
@@ -934,21 +936,22 @@ function istFreigegeben(b){
     return d.toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'});
   }
 
-  function renderFallback(){
-    document.getElementById('newsSubtitle').textContent = tr('web_news_demnaechst');
+  // Keine Beiträge oder Fehler: ein freundlicher Hinweis statt
+  // Platzhalter-News. data-i18n sorgt dafür, dass der Hinweis beim
+  // Sprachwechsel mit übersetzt wird.
+  function renderHinweis(){
     document.getElementById('newsGrid').innerHTML=
-      '<div class="news-card"><div class="news-thumb">🏀</div><div class="news-body"><div class="news-cat">'+tr('web_news_kat_produkt')+'</div><div class="news-title">'+tr('web_news_fallback_1')+'</div><div class="news-date">'+tr('web_news_demnaechst')+'</div></div></div>'+
-      '<div class="news-card"><div class="news-thumb">📣</div><div class="news-body"><div class="news-cat">'+tr('web_news_kat_partnerschaft')+'</div><div class="news-title">'+tr('web_news_fallback_2')+'</div><div class="news-date">'+tr('web_news_demnaechst')+'</div></div></div>'+
-      '<div class="news-card"><div class="news-thumb">🤖</div><div class="news-body"><div class="news-cat">'+tr('web_news_kat_ki')+'</div><div class="news-title">'+tr('web_news_fallback_3')+'</div><div class="news-date">'+tr('web_news_demnaechst')+'</div></div></div>';
+      '<div data-i18n="web_news_demnaechst" style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:15px;padding:28px 0;">'+esc(tr('web_news_demnaechst'))+'</div>';
   }
 
+  // Neueste zuerst (nach datum, sonst erstellt_am), höchstens MAX_NEWS.
   function renderNews(beitraege){
-    _alle = beitraege.map(normBeitrag).filter(istFreigegeben);
-    if(!_alle.length){renderFallback();return;}
-    document.getElementById('newsSubtitle').textContent = tr('web_news_subtitle');
-    var slice=_alle.slice(0,3);
-    document.getElementById('newsGrid').innerHTML=slice.map(function(b){
-      var kat=b.kategorie||b.beitragsart||'News';
+    _alle = beitraege.map(normBeitrag)
+      .sort(function(a,b){return (new Date(b.datum).getTime()||0)-(new Date(a.datum).getTime()||0);})
+      .slice(0,MAX_NEWS);
+    if(!_alle.length){renderHinweis();return;}
+    document.getElementById('newsGrid').innerHTML=_alle.map(function(b){
+      var kat=b.kategorie||'News';
       var emoji=EMOJIS[kat]||EMOJIS['default'];
       var thumb=b.bild_url
         ?'<div class="news-thumb" style="background-image:url('+esc(b.bild_url)+');background-size:cover;background-position:center;"></div>'
@@ -969,10 +972,12 @@ function istFreigegeben(b){
     if(!b)return;
     document.getElementById('artikel-bild-wrap').innerHTML=b.bild_url
       ?'<img src="'+esc(b.bild_url)+'" alt="" style="width:100%;max-height:420px;object-fit:cover;" onerror="this.remove()">':'';
-    document.getElementById('artikel-tag').textContent=b.kategorie||b.beitragsart||'News';
+    document.getElementById('artikel-tag').textContent=b.kategorie||'News';
     document.getElementById('artikel-datum').textContent=fmtD(b.datum)?'📅 '+fmtD(b.datum):'';
     document.getElementById('artikel-titel').textContent=b.headline||'';
-    document.getElementById('artikel-teaser').textContent=b.teaser||'';
+    // Der Teaser ist nur der Textanfang: im Artikel steht der ganze Text,
+    // deshalb wird er dort nicht noch einmal gezeigt.
+    document.getElementById('artikel-teaser').style.display='none';
     var body=document.getElementById('artikel-body');
     var txt=b.spielbericht||'';
     body.innerHTML=txt.includes('<')?txt:txt?txt.split('\n\n').map(function(p){return'<p style="margin-bottom:1em">'+esc(p)+'</p>';}).join(''):'';
@@ -990,14 +995,27 @@ function istFreigegeben(b){
 
   document.addEventListener('keydown',function(e){if(e.key==='Escape')schliesseArtikel();});
 
-  fetch(window.GAS_URL+'?action=getStudioBeitraege&kundenId='+KUNDEN_ID)
-    .then(function(r){return r.json();})
-    .then(function(data){
-      var beitraege=data.beitraege||data.data||data||[];
-      if(!Array.isArray(beitraege)||!beitraege.length){renderFallback();return;}
+  // Filter wie bei den Vereinsseiten: nicht gelöscht, veröffentlicht,
+  // Zeitpunkt leer oder erreicht ("now" = Uhr der Datenbank), Kanal
+  // website. Es werden etwas mehr Zeilen geholt als gezeigt, weil
+  // Beiträge ohne datum erst hier nach erstellt_am einsortiert werden.
+  var abfrage=SUPABASE_URL+'/rest/v1/beitraege'
+    +'?kunden_id=eq.'+encodeURIComponent(KUNDEN_ID)
+    +'&geloescht=not.is.true'
+    +'&status=eq.veroeffentlicht'
+    +'&or=(veroeffentlichen_am.is.null,veroeffentlichen_am.lte.now)'
+    +'&kanaele=cs.%7Bwebsite%7D'
+    +'&select=id,titel,text,bild_url,video_url,kategorie,datum,erstellt_am'
+    +'&order=datum.desc.nullsfirst,erstellt_am.desc'
+    +'&limit=30';
+
+  fetch(abfrage,{headers:{apikey:SUPABASE_KEY}})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(beitraege){
+      if(!Array.isArray(beitraege)){renderHinweis();return;}
       renderNews(beitraege);
     })
-    .catch(function(){renderFallback();});
+    .catch(function(e){console.warn('News: nicht geladen.',e.message);renderHinweis();});
 })();
 </script>
 
