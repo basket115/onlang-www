@@ -410,6 +410,17 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 /* Der Hauptknopf ist länger geworden: das Menü wechselt früher auf die drei Striche. */
 .hdr-nav a,.hdr-right .btn{white-space:nowrap;}
 @media(max-width:1100px){.hdr-nav{display:none;}.hdr-burger{display:flex;}}
+/* Hero-Produktbild: Browser-Rahmen hinten, Handy-Rahmen vorn. */
+.hv-browser{border-radius:14px;padding:14px;}
+.hv-shot{display:block;width:100%;height:auto;border-radius:8px;}
+.hv-phone{width:170px;right:-5%;bottom:-16%;}
+.hv-phone .hv-shot{border-radius:18px;}
+/* Sehr dezentes Schweben – nur wenn das Gerät keine reduzierte Bewegung wünscht. */
+@keyframes hv-schweben{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@media(prefers-reduced-motion:no-preference){.hv-phone{animation:hv-schweben 7s ease-in-out infinite;}.hv-browser{animation:hv-schweben 9s ease-in-out -3s infinite;}}
+/* Tablet: Bild unter dem Text, kleiner. Handy: kein Bild (Text und Knopf zuerst). */
+@media(max-width:1024px){.hero-visual{order:0;min-height:0;padding-bottom:56px;}.hv-laptop{max-width:420px;}.hv-phone{width:140px;}}
+@media(max-width:640px){.hero-visual{display:none;}}
 @media(max-width:860px){.angebot{grid-template-columns:1fr;gap:28px;padding:26px 22px;}}
 @media(max-width:760px){.preis-grid-2{grid-template-columns:1fr;max-width:420px;}}
 
@@ -514,30 +525,17 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
         <div class="hero-stat"><div class="hero-stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"></use></svg></div><div class="hero-stat-lbl" data-i18n="web_hero_feld_kommunikation">Vereinskommunikation</div></div>
       </div>
     </div>
-    <div class="hero-visual">
+    <!-- Produktbild: Website (Browser) und App (Handy) des Testvereins T001.
+         Reine Zierde, deshalb ohne Alternativtext. Auf dem Handy wird es
+         nicht gezeigt und dank <picture> auch nicht geladen. -->
+    <div class="hero-visual" aria-hidden="true">
       <div class="hv-laptop">
-        <div class="hv-laptop-screen">
+        <div class="hv-laptop-screen hv-browser">
           <div class="hv-laptop-bar"><div class="hv-laptop-dot"></div><div class="hv-laptop-dot"></div><div class="hv-laptop-dot"></div></div>
-          <div class="hv-laptop-content">
-            <div class="hv-laptop-row w1"></div>
-            <div class="hv-laptop-row w2"></div>
-            <div class="hv-laptop-row w3"></div>
-            <div class="hv-laptop-cards">
-              <div class="hv-laptop-card"></div>
-              <div class="hv-laptop-card"></div>
-              <div class="hv-laptop-card"></div>
-            </div>
-          </div>
+          <picture><source media="(max-width:640px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="hv-shot" src="bilder/hero-website.webp" width="960" height="600" alt="" decoding="async"></picture>
         </div>
-        <div class="hv-laptop-base"></div>
         <div class="hv-phone">
-          <div class="hv-phone-screen">
-            <div class="hv-phone-logo">ON</div>
-            <div class="hv-phone-row w1"></div>
-            <div class="hv-phone-row w2"></div>
-            <div class="hv-phone-card"></div>
-            <div class="hv-phone-card"></div>
-          </div>
+          <picture><source media="(max-width:640px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="hv-shot" src="bilder/hero-app.webp" width="390" height="800" alt="" decoding="async"></picture>
         </div>
       </div>
     </div>
