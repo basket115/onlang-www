@@ -707,8 +707,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 </div>
 
 <script>
-// Globale GAS-URL – EINZIGE Quelle für die gesamte Seite (i18n + News).
-// Muss vor allen anderen Skripten stehen, die sie verwenden.
+// Globale GAS-URL – nur noch für die News. Die Texte (i18n) kommen aus
+// dem Ordner texte/. Muss vor allen Skripten stehen, die sie verwenden.
 window.GAS_URL = 'https://script.google.com/macros/s/AKfycbx7gnTorNAQz21x3vwZOFQl2bkP2t1QKLppcUSQ_-CQywRS-36AZOeqDDMJg3uXVa2ntA/exec';
 </script>
 
@@ -851,12 +851,15 @@ window.GAS_URL = 'https://script.google.com/macros/s/AKfycbx7gnTorNAQz21x3vwZOFQ
   };
 
   window.ladeWebsiteTranslations = function(lang){
-    var url = window.GAS_URL + '?action=getTranslations&lang=' + encodeURIComponent(lang);
+    // Texte aus dem eigenen Ordner texte/ (de.json, hu.json, en.json) –
+    // unveränderte Kopie der GAS-Antwort von getTranslations, kein Abruf
+    // bei script.google.com mehr.
+    var url = 'texte/' + encodeURIComponent(lang) + '.json';
     fetch(url).then(function(r){ return r.json(); }).then(function(res){
       if (res && res.success && res.translations && Object.keys(res.translations).length) {
         websiteTranslations = Object.assign({}, TRANSLATIONS_FALLBACK_WEB_DE, res.translations);
       } else {
-        console.warn('Website-Übersetzungen: Sheet nicht verfügbar, bleibe bei Deutsch-Fallback.', res && res.error);
+        console.warn('Website-Übersetzungen: Textdatei nicht verfügbar, bleibe bei Deutsch-Fallback.', res && res.error);
       }
     }).catch(function(e){
       console.warn('Website-Übersetzungen: Verbindungsfehler, bleibe bei Deutsch-Fallback.', e.message);
@@ -1060,7 +1063,7 @@ function istFreigegeben(b){
         </div>
         <div class="ki-card">
           <div class="ki-ico"><svg class="ico" aria-hidden="true"><use href="#i-phone"></use></svg></div>
-          <div><div class="ki-lbl" data-i18n="web_kontakt_telefon">Telefon</div><div class="ki-val"><a href="tel:+4901792179021">+49 179 2179021</a></div></div>
+          <div><div class="ki-lbl" data-i18n="web_kontakt_telefon">Telefon</div><div class="ki-val"><a href="tel:+491792179021">+49 179 2179021</a></div></div>
         </div>
         <div class="ki-card">
           <div class="ki-ico"><svg class="ico" aria-hidden="true"><use href="#i-smartphone"></use></svg></div>
@@ -1105,7 +1108,9 @@ function istFreigegeben(b){
     <div>
       <div class="ftr-col-title" data-i18n="web_footer_zugang">Zugang</div>
       <div class="ftr-links">
+        <!-- "Login Studio" vorerst ausgeblendet: die neue Adresse kommt nach der Studio-Freischaltung.
         <a href="https://studio-onlang-test.netlify.app" target="_blank" rel="noopener" data-i18n="web_footer_login_studio">Login Studio</a>
+        -->
         <span class="ftr-soon" data-i18n-title="web_footer_demnaechst" data-i18n="web_footer_login_kunden">Login Kunden (demnächst)</span>
         <a href="#kontakt" data-i18n="web_footer_support">Support</a>
       </div>
