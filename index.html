@@ -381,10 +381,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 .loes-name .loes-soon{margin-left:6px;vertical-align:middle;}
 .flow-chan{flex-wrap:wrap;}
 .flow-chan .loes-soon{width:100%;background:none;padding:0;}
-/* Das Scorpions-Logo sitzt klein in der Mitte einer weißen Fläche: hier wird der Rand abgeschnitten. */
+/* Vereinslogos in den Referenzen: quadratisch auf Weiß, in einem weißen Feld. */
 .ref-logo-box{width:130px;height:130px;border-radius:20px;background:#fff;overflow:hidden;position:relative;}
-.ref-logo{position:absolute;left:50%;top:50%;width:300%;max-width:none;transform:translate(-50%,-50%);}
-/* Darazsak-Logo: quadratisch auf Weiß, füllt das weiße Feld ganz. */
 .ref-logo-ganz{width:100%;height:100%;object-fit:contain;}
 .ref-shot .ico{width:40px;height:40px;color:var(--faint);}
 .ref-weitere{opacity:.8;}
@@ -414,13 +412,18 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 /* Hero-Produktbild: Browser-Rahmen hinten, Handy-Rahmen vorn. */
 .hv-browser{border-radius:14px;padding:14px;}
 .hv-shot{display:block;width:100%;height:auto;border-radius:8px;}
-.hv-phone{width:170px;right:-5%;bottom:-16%;}
-.hv-phone .hv-shot{border-radius:18px;}
+/* Desktop: Bild etwa halbe Breite. Der Browser füllt 84 % der Spalte, das Handy
+   steht rechts davor und ist senkrecht mittig (ragt oben und unten über). */
+@media(min-width:1025px){.hero-in{grid-template-columns:1fr 1fr;gap:48px;}.hero-visual{min-height:600px;}}
+.hv-laptop{width:100%;max-width:none;min-height:590px;display:flex;align-items:center;}
+.hv-browser{width:84%;}
+.hv-phone{width:206px;right:0;top:0;bottom:0;margin:auto 0;height:fit-content;border-radius:36px;padding:9px;}
+.hv-phone .hv-shot{border-radius:27px;}
 /* Sehr dezentes Schweben – nur wenn das Gerät keine reduzierte Bewegung wünscht. */
 @keyframes hv-schweben{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 @media(prefers-reduced-motion:no-preference){.hv-phone{animation:hv-schweben 7s ease-in-out infinite;}.hv-browser{animation:hv-schweben 9s ease-in-out -3s infinite;}}
 /* Tablet: Bild unter dem Text, kleiner. Handy: kein Bild (Text und Knopf zuerst). */
-@media(max-width:1024px){.hero-visual{order:0;min-height:0;padding-bottom:56px;}.hv-laptop{max-width:420px;}.hv-phone{width:140px;}}
+@media(max-width:1024px){.hero-visual{order:0;min-height:0;}.hv-laptop{max-width:540px;min-height:470px;}.hv-phone{width:162px;border-radius:30px;padding:8px;}.hv-phone .hv-shot{border-radius:22px;}}
 @media(max-width:640px){.hero-visual{display:none;}}
 @media(max-width:860px){.angebot{grid-template-columns:1fr;gap:28px;padding:26px 22px;}}
 @media(max-width:760px){.preis-grid-2{grid-template-columns:1fr;max-width:420px;}}
@@ -526,7 +529,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
         <div class="hero-stat"><div class="hero-stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"></use></svg></div><div class="hero-stat-lbl" data-i18n="web_hero_feld_kommunikation">Vereinskommunikation</div></div>
       </div>
     </div>
-    <!-- Produktbild: Website (Browser) und App (Handy) des Testvereins T001.
+    <!-- Produktbild: hinten die Website des Testvereins T001 (Browser), vorn die
+         Scorpions-App (Handy, Bildschirm aus dem App-Plakat der Scorpions).
          Reine Zierde, deshalb ohne Alternativtext. Auf dem Handy wird es
          nicht gezeigt und dank <picture> auch nicht geladen. -->
     <div class="hero-visual" aria-hidden="true">
@@ -536,7 +540,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
           <picture><source media="(max-width:640px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="hv-shot" src="bilder/hero-website.webp" width="960" height="600" alt="" decoding="async"></picture>
         </div>
         <div class="hv-phone">
-          <picture><source media="(max-width:640px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="hv-shot" src="bilder/hero-app.webp" width="390" height="800" alt="" decoding="async"></picture>
+          <picture><source media="(max-width:640px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="hv-shot" src="bilder/hero-app-scorpions.webp" width="400" height="1171" alt="" decoding="async"></picture>
         </div>
       </div>
     </div>
@@ -661,7 +665,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     </div>
     <div class="ref-grid">
       <div class="ref-card">
-        <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo" src="logos/Logo-Scorpions-Gierath.svg" alt="Scorpions SG Gierath"></div></div>
+        <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo-ganz" src="logos/logo-scorpions.webp" width="200" height="200" alt="Scorpions SG Gierath"></div></div>
         <div class="ref-body"><div class="ref-name">Scorpions SG Gierath</div><div class="ref-meta" data-i18n="web_ref_scorpions_meta">Basketball · NRW</div></div>
       </div>
       <!-- Darazsak-Karte: Referenz und Logo am 09.10.2026 freigegeben. Ein- und Ausblenden im Stil-Block oben (#refDarazsak). -->
