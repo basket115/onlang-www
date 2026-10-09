@@ -386,6 +386,9 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 .ref-logo-ganz{width:100%;height:100%;object-fit:contain;}
 .ref-shot .ico{width:40px;height:40px;color:var(--faint);}
 .ref-weitere{opacity:.8;}
+/* Knöpfe „App ansehen“ / „Website ansehen“: mindestens 44 px hoch, damit sie am Handy gut antippbar sind. */
+.ref-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.ref-links .btn{flex:1 1 auto;justify-content:center;min-height:44px;padding:10px 14px;white-space:nowrap;}
 /* Darazsak-Karte: freigegeben, bleibt sichtbar. Zum Ausblenden "none" statt "block" eintragen. */
 #refDarazsak{display:block;}
 .preis-grid-2{grid-template-columns:repeat(2,1fr);max-width:880px;margin:0 auto;}
@@ -666,12 +669,22 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     <div class="ref-grid">
       <div class="ref-card">
         <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo-ganz" src="logos/logo-scorpions.webp" width="200" height="200" alt="Scorpions SG Gierath"></div></div>
-        <div class="ref-body"><div class="ref-name">Scorpions SG Gierath</div><div class="ref-meta" data-i18n="web_ref_scorpions_meta">Basketball · NRW</div></div>
+        <div class="ref-body"><div class="ref-name">Scorpions SG Gierath</div><div class="ref-meta" data-i18n="web_ref_scorpions_meta">Basketball · NRW</div>
+          <div class="ref-links">
+            <a class="btn btn-ghost btn-sm" href="https://club.onlang.de/?kunde=V002" target="_blank" rel="noopener" data-i18n="web_ref_app_ansehen">App ansehen</a>
+            <a class="btn btn-ghost btn-sm" href="https://onlang-app.netlify.app/template7.html?kunde=V002" target="_blank" rel="noopener" data-i18n="web_ref_website_ansehen">Website ansehen</a>
+          </div>
+        </div>
       </div>
       <!-- Darazsak-Karte: Referenz und Logo am 09.10.2026 freigegeben. Ein- und Ausblenden im Stil-Block oben (#refDarazsak). -->
       <div class="ref-card" id="refDarazsak">
         <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo-ganz" src="logos/logo-darazsak.webp" width="260" height="260" alt="Kőbányai Darazsak"></div></div>
-        <div class="ref-body"><div class="ref-name">Kőbányai Darazsak</div><div class="ref-meta" data-i18n="web_ref_darazsak_meta">Basketball · Budapest, Ungarn</div></div>
+        <div class="ref-body"><div class="ref-name">Kőbányai Darazsak</div><div class="ref-meta" data-i18n="web_ref_darazsak_meta">Basketball · Budapest, Ungarn</div>
+          <div class="ref-links">
+            <a class="btn btn-ghost btn-sm" href="https://club.onlang.de/?kunde=HU001" target="_blank" rel="noopener" data-i18n="web_ref_app_ansehen">App ansehen</a>
+            <a class="btn btn-ghost btn-sm" href="https://onlang-app.netlify.app/template7.html?kunde=HU001" target="_blank" rel="noopener" data-i18n="web_ref_website_ansehen">Website ansehen</a>
+          </div>
+        </div>
       </div>
       <div class="ref-card ref-weitere">
         <div class="ref-shot"><svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></div>
@@ -943,6 +956,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     web_ref_scorpions_meta:'Basketball · NRW',
     web_ref_darazsak_meta:'Basketball · Budapest, Ungarn',
     web_ref_weitere:'Weitere Vereine folgen.',
+    web_ref_app_ansehen:'App ansehen',
+    web_ref_website_ansehen:'Website ansehen',
     web_preis_gruenderpreis:'Gründerpreis',
     web_preis_basic_betrag:'9,90 €',
     web_preis_basic_statt:'statt 29,90 €',
