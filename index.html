@@ -384,10 +384,11 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 /* Das Scorpions-Logo sitzt klein in der Mitte einer weißen Fläche: hier wird der Rand abgeschnitten. */
 .ref-logo-box{width:130px;height:130px;border-radius:20px;background:#fff;overflow:hidden;position:relative;}
 .ref-logo{position:absolute;left:50%;top:50%;width:300%;max-width:none;transform:translate(-50%,-50%);}
-.ref-initialen{width:88px;height:88px;border-radius:50%;background:var(--primary-dim);border:1px solid rgba(244,122,31,.3);color:var(--primary);font-family:var(--font-headline);font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+/* Darazsak-Logo: quadratisch auf Weiß, füllt das weiße Feld ganz. */
+.ref-logo-ganz{width:100%;height:100%;object-fit:contain;}
 .ref-shot .ico{width:40px;height:40px;color:var(--faint);}
 .ref-weitere{opacity:.8;}
-/* Darazsak-Karte ausblenden (falls keine Zustimmung): in der nächsten Zeile "none" statt "block" eintragen. */
+/* Darazsak-Karte: freigegeben, bleibt sichtbar. Zum Ausblenden "none" statt "block" eintragen. */
 #refDarazsak{display:block;}
 .preis-grid-2{grid-template-columns:repeat(2,1fr);max-width:880px;margin:0 auto;}
 .preis-grid-2 .preis-feature{align-items:flex-start;}
@@ -663,9 +664,9 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
         <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo" src="logos/Logo-Scorpions-Gierath.svg" alt="Scorpions SG Gierath"></div></div>
         <div class="ref-body"><div class="ref-name">Scorpions SG Gierath</div><div class="ref-meta" data-i18n="web_ref_scorpions_meta">Basketball · NRW</div></div>
       </div>
-      <!-- Darazsak-Karte: vorerst ohne Logo. Ausblenden mit einer Zeile im Stil-Block oben (#refDarazsak). -->
+      <!-- Darazsak-Karte: Referenz und Logo am 09.10.2026 freigegeben. Ein- und Ausblenden im Stil-Block oben (#refDarazsak). -->
       <div class="ref-card" id="refDarazsak">
-        <div class="ref-shot"><div class="ref-initialen">KD</div></div>
+        <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo-ganz" src="logos/logo-darazsak.png" width="260" height="260" alt="Kőbányai Darazsak"></div></div>
         <div class="ref-body"><div class="ref-name">Kőbányai Darazsak</div><div class="ref-meta" data-i18n="web_ref_darazsak_meta">Basketball · Budapest, Ungarn</div></div>
       </div>
       <div class="ref-card ref-weitere">
