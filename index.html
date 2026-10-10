@@ -427,6 +427,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 /* Sehr dezentes Schweben – nur wenn das Gerät keine reduzierte Bewegung wünscht. */
 @keyframes hv-schweben{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 @media(prefers-reduced-motion:no-preference){.hv-phone{animation:hv-schweben 7s ease-in-out infinite;}.hv-browser{animation:hv-schweben 9s ease-in-out -3s infinite;}}
+/* Eigenes Hero-Bild aus Supabase (app_bild_url von V001): ersetzt Browser + Handy, sobald es geladen ist. */
+.hv-eigen{display:block;width:100%;height:auto;max-height:640px;object-fit:contain;}
+@media(prefers-reduced-motion:no-preference){.hv-eigen{animation:hv-schweben 9s ease-in-out infinite;}}
+@media(max-width:1024px){.hv-eigen{max-width:540px;}}
 /* Tablet: Bild unter dem Text, kleiner. Handy: kein Bild (Text und Knopf zuerst). */
 @media(max-width:1024px){.hero-visual{order:0;min-height:0;}.hv-laptop{max-width:540px;min-height:400px;}.hv-phone{width:176px;border-radius:30px;padding:8px;}.hv-phone .hv-shot{border-radius:22px;}}
 @media(max-width:640px){.hero-visual{display:none;}}
@@ -1254,9 +1258,44 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     .catch(function(e){console.warn('News: nicht geladen.',e.message);renderHinweis();});
 
   // Hero aus Supabase (website_einstellungen, Zeile von V001): große
-  // Überschrift, Unterzeile und Handy-Bild. Die Texte gelten nur für
+  // Überschrift, Unterzeile und Bild. Die Texte gelten nur für
   // Deutsch (siehe heroAusSupabase oben), das Bild für alle Sprachen.
   // Leeres Feld oder Fehler: Text und Bild der Seite bleiben, wie sie sind.
+  var HERO_BILD_BREITE = 1200; // etwa doppelte Anzeigebreite (scharf auf guten Bildschirmen)
+
+  // Cloudinary-Adresse: verkleinert (nie vergrößert) und als WebP. Andere
+  // Adressen und solche, die schon eine Umwandlung tragen, bleiben wie sie sind.
+  function heroBildAdresse(url){
+    var m=url.match(/^(https:\/\/res\.cloudinary\.com\/[^\/]+\/image\/upload\/)(v\d+\/.+)$/i);
+    return m?m[1]+'f_webp,q_auto,c_limit,w_'+HERO_BILD_BREITE+'/'+m[2]:url;
+  }
+
+  // Ersetzt das GANZE Bild rechts (Browser + Handy) durch das eigene Bild.
+  // Das eingebaute Bild wird erst ausgeblendet, wenn das neue fertig geladen
+  // ist. Lädt die verkleinerte Fassung nicht, wird die Originaladresse
+  // versucht; lädt auch die nicht, bleibt das eingebaute Bild.
+  // Unter 640 px zeigt die Seite kein Hero-Bild: dann wird auch nichts
+  // geladen, erst wenn das Fenster breiter wird.
+  function zeigeHeroBild(url){
+    var rahmen=document.querySelector('.hero-visual');
+    var eingebaut=rahmen&&rahmen.querySelector('.hv-laptop');
+    if(!eingebaut)return;
+    var schmal=window.matchMedia('(max-width:640px)');
+    if(schmal.matches){
+      var warte=function(){if(schmal.matches)return;schmal.removeEventListener('change',warte);zeigeHeroBild(url);};
+      schmal.addEventListener('change',warte);
+      return;
+    }
+    var adressen=[heroBildAdresse(url)];
+    if(adressen[0]!==url)adressen.push(url);
+    var img=new Image();
+    img.className='hv-eigen';
+    img.alt='';
+    img.decoding='async';
+    img.onload=function(){eingebaut.style.display='none';rahmen.appendChild(img);};
+    img.onerror=function(){if(adressen.length)img.src=adressen.shift();};
+    img.src=adressen.shift();
+  }
   var heroAbfrage=SUPABASE_URL+'/rest/v1/website_einstellungen'
     +'?kunden_id=eq.'+encodeURIComponent(KUNDEN_ID)
     +'&select=hero_titel,hero_unterzeile,app_bild_url';
@@ -1271,13 +1310,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
       heroAusSupabase.titel=String(z.hero_titel||'').trim();
       if(unterzeile)heroAusSupabase.texte.web_hero_subtitle=unterzeile;
       wendeWebsiteUebersetzungenAn();
-      // Bild nur über https; lädt es nicht, kommt das eingebaute Bild zurück.
-      var img=document.querySelector('.hv-phone img.hv-shot');
-      if(img&&/^https:\/\/\S+$/i.test(bild)){
-        var eingebaut=img.getAttribute('src');
-        img.onerror=function(){img.onerror=null;img.src=eingebaut;};
-        img.src=bild;
-      }
+      if(/^https:\/\/\S+$/i.test(bild))zeigeHeroBild(bild);
     })
     .catch(function(e){console.warn('Hero: nicht geladen.',e.message);});
 })();
