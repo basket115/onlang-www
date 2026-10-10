@@ -1017,16 +1017,49 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
   // tr(key): Website-Text in aktueller Sprache. Fallback-Kette:
   // Sheet-Wert (aktuelle Sprache) → eingebautes Deutsch → Key selbst.
   // Ein fehlender Key lässt die Website NIE abstürzen.
+  // Hero aus Supabase (Tabelle website_einstellungen, Kunde V001), gepflegt
+  // im Website-Admin. Gefüllt wird das vom News-Skript weiter unten.
+  // Gilt NUR für Deutsch; HU/EN bleiben aus texte/*.json. Leeres Feld oder
+  // Supabase nicht erreichbar = der eingebaute Text bleibt (Sicherheitsnetz).
+  //   texte: Werte, die tr() vor allen anderen nimmt (z. B. web_hero_subtitle).
+  //   titel: große Überschrift; Text in *Sternchen* wird orange, der Rest weiß.
+  window.heroAusSupabase = { texte:{}, titel:'' };
+  var heroTitelOriginal = null;
+
+  // Vor dem Übersetzen: die zwei ursprünglichen Titel-Teile zurückholen,
+  // falls der Titel aus Supabase sie ersetzt hat (z. B. Wechsel auf HU).
+  function heroTitelZuruecksetzen(){
+    var h1 = document.querySelector('.hero-title');
+    if (!h1) return;
+    if (heroTitelOriginal === null) heroTitelOriginal = h1.innerHTML;
+    else if (!h1.querySelector('[data-i18n]')) h1.innerHTML = heroTitelOriginal;
+  }
+
+  // Nach dem Übersetzen: bei Deutsch den Titel aus Supabase einsetzen.
+  function heroTitelEinsetzen(){
+    var h1 = document.querySelector('.hero-title');
+    if (!h1 || aktuelleWebsiteSprache !== 'de' || !heroAusSupabase.titel) return;
+    h1.textContent = '';
+    heroAusSupabase.titel.split(/\*([^*]+)\*/).forEach(function(teil, i){
+      if (!teil) return;
+      if (i % 2) { var s = document.createElement('span'); s.textContent = teil; h1.appendChild(s); }
+      else h1.appendChild(document.createTextNode(teil));
+    });
+  }
+
   window.tr = function(key){
+    if (aktuelleWebsiteSprache === 'de' && Object.prototype.hasOwnProperty.call(heroAusSupabase.texte, key) && heroAusSupabase.texte[key]) return heroAusSupabase.texte[key];
     if (Object.prototype.hasOwnProperty.call(websiteTranslations, key) && websiteTranslations[key]) return websiteTranslations[key];
     if (Object.prototype.hasOwnProperty.call(TRANSLATIONS_FALLBACK_WEB_DE, key)) return TRANSLATIONS_FALLBACK_WEB_DE[key];
     return key;
   };
 
   window.wendeWebsiteUebersetzungenAn = function(){
+    heroTitelZuruecksetzen();
     document.querySelectorAll('[data-i18n]').forEach(function(el){
       el.textContent = tr(el.getAttribute('data-i18n'));
     });
+    heroTitelEinsetzen();
     document.querySelectorAll('[data-i18n-title]').forEach(function(el){
       el.title = tr(el.getAttribute('data-i18n-title'));
     });
@@ -1217,6 +1250,34 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
       renderNews(beitraege);
     })
     .catch(function(e){console.warn('News: nicht geladen.',e.message);renderHinweis();});
+
+  // Hero aus Supabase (website_einstellungen, Zeile von V001): große
+  // Überschrift, Unterzeile und Handy-Bild. Die Texte gelten nur für
+  // Deutsch (siehe heroAusSupabase oben), das Bild für alle Sprachen.
+  // Leeres Feld oder Fehler: Text und Bild der Seite bleiben, wie sie sind.
+  var heroAbfrage=SUPABASE_URL+'/rest/v1/website_einstellungen'
+    +'?kunden_id=eq.'+encodeURIComponent(KUNDEN_ID)
+    +'&select=hero_titel,hero_unterzeile,app_bild_url';
+
+  fetch(heroAbfrage,{headers:{apikey:SUPABASE_KEY}})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(zeilen){
+      var z=Array.isArray(zeilen)?zeilen[0]:null;
+      if(!z)return;
+      var unterzeile=String(z.hero_unterzeile||'').trim();
+      var bild=String(z.app_bild_url||'').trim();
+      heroAusSupabase.titel=String(z.hero_titel||'').trim();
+      if(unterzeile)heroAusSupabase.texte.web_hero_subtitle=unterzeile;
+      wendeWebsiteUebersetzungenAn();
+      // Bild nur über https; lädt es nicht, kommt das eingebaute Bild zurück.
+      var img=document.querySelector('.hv-phone img.hv-shot');
+      if(img&&/^https:\/\/\S+$/i.test(bild)){
+        var eingebaut=img.getAttribute('src');
+        img.onerror=function(){img.onerror=null;img.src=eingebaut;};
+        img.src=bild;
+      }
+    })
+    .catch(function(e){console.warn('Hero: nicht geladen.',e.message);});
 })();
 </script>
 
@@ -1279,7 +1340,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
             <div class="ki-lbl" data-i18n="web_kontakt_social_media">Social Media</div>
             <div class="ki-soc">
               <a href="https://www.facebook.com/onlang23" target="_blank" rel="noopener" title="Facebook"><svg class="ico" aria-hidden="true"><use href="#i-facebook"></use></svg></a>
-              <a href="https://www.instagram.com/onlang23/" target="_blank" rel="noopener" title="Instagram"><svg class="ico" aria-hidden="true"><use href="#i-instagram"></use></svg></a>
+              <a href="https://www.instagram.com/onlang.sport/" target="_blank" rel="noopener" title="Instagram"><svg class="ico" aria-hidden="true"><use href="#i-instagram"></use></svg></a>
               <a href="https://www.linkedin.com/in/onlang/" target="_blank" rel="noopener" title="LinkedIn"><svg class="ico" aria-hidden="true"><use href="#i-linkedin"></use></svg></a>
             </div>
           </div>
