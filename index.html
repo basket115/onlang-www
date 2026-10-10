@@ -56,6 +56,9 @@ h1,h2,h3,.sec-title,.hero-title,.hdr-name,.btn,.loes-name,.preis-name,
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-feature-settings:"kern" 1,"liga" 1;font-kerning:normal;font-optical-sizing:auto;overflow-x:hidden;}
 a{text-decoration:none;color:inherit;}
+/* Links im Text eines Beitrags: unterstrichen, lange Adressen brechen um */
+#artikel-body a{text-decoration:underline;text-decoration-color:var(--primary);text-decoration-thickness:2px;text-underline-offset:3px;overflow-wrap:anywhere;}
+#artikel-body a:hover{color:var(--primary);}
 img{max-width:100%;display:block;}
 button{font-family:inherit;border:none;background:none;cursor:pointer;}
 ul{list-style:none;}
@@ -1144,12 +1147,101 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 
   var EMOJIS = {'Unternehmensnews':'📣','Produkt':'🚀','Partnerschaft':'🤝','KI':'🤖','Sport':'🏀','Event':'🎉','default':'📰'};
 
-  function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+  // Entschärft Text für HTML – auch Anführungszeichen, weil die Werte auch
+  // in Attributen stehen (src, style, onclick).
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  // Bild-Adressen nur mit http:// oder https://, ohne Zeichen, die aus der
+  // Adresse ausbrechen könnten.
+  function bildAdresse(url){
+    url=String(url||'').trim();
+    return /^https?:\/\/[^\s"'()<>\\]+$/i.test(url)?url:'';
+  }
+
+  // ── TEXTFORMAT DER BEITRÄGE ───────────────────────────────────
+  // Der Text eines Beitrags ist reiner Text mit fünf Auszeichnungen, so wie
+  // das ONLANG Studio ihn speichert – KEIN HTML:
+  //   Absatz      Leerzeile (ein einfacher Zeilenumbruch bleibt erhalten)
+  //   fett        **Text**
+  //   kursiv      _Text_
+  //   Link        [Text](https://…), jede Adresse mit http://, https://, www.
+  //   Video       eine Zeile, in der nur ein YouTube- oder MP4-Link steht
+  // beitragsTextZuHtml entschärft ZUERST alles (esc) und wandelt danach nur
+  // diese Muster um. Was im Text wie HTML aussieht (<b>, <script> …),
+  // erscheint deshalb als Text und wird nie ausgeführt. Gleiche Regeln wie
+  // in Template 7 (beitragsTextZuHtml_).
+  var ADRESSE_MUSTER=/^https?:\/\/[^\s<>"']+$/i;
+  function youtubeId(url){
+    var m=String(url).match(/(?:youtube(?:-nocookie)?\.com\/(?:(?:watch|attribution_link)?\?(?:.*&)?v=|(?:embed|shorts|live|v|e)\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    return m?m[1]:'';
+  }
+  function videoArt(url){
+    var u=String(url||'').trim();
+    if(!ADRESSE_MUSTER.test(u)) return '';
+    if(youtubeId(u)) return 'youtube';
+    return /\.mp4(\?[^\s]*)?$/i.test(u)?'mp4':'';
+  }
+  function videoHtml(url){
+    var u=String(url).trim();
+    var rahmen='margin:0 0 1em;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:#000;';
+    if(videoArt(u)==='youtube'){
+      return '<div style="'+rahmen+'"><iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/'+youtubeId(u)+'?rel=0" title="Video" loading="lazy" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:block;"></iframe></div>';
+    }
+    return '<div style="'+rahmen+'"><video src="'+esc(u)+'" controls preload="metadata" playsinline style="display:block;width:100%;height:100%;"></video></div>';
+  }
+  // Eine Zeile: entschärfen, dann Link, Adresse, fett, kursiv.
+  function zeileZuHtml(zeile){
+    var fertig=[];
+    var merke=function(html){fertig.push(html);return '\u0000'+(fertig.length-1)+'\u0000';};
+    var link=function(adresse,text){return '<a href="'+adresse+'" target="_blank" rel="noopener noreferrer">'+text+'</a>';};
+
+    var s=esc(String(zeile).replace(/\u0000/g,''));
+    // [Text](https://…)
+    s=s.replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)<>]+)\)/gi,function(_,text,adresse){return merke(link(adresse,text));});
+    // Satzzeichen am Ende einer Adresse gehören nicht dazu.
+    var ohneEnde=function(adresse){
+      var ende=(adresse.match(/(?:&quot;|&#39;|[.,;:!?)\]])+$/)||[''])[0];
+      return [adresse.slice(0,adresse.length-ende.length),ende];
+    };
+    // nackte Adresse mit http:// oder https://
+    s=s.replace(/https?:\/\/[^\s<>‹›\u0000]+/gi,function(adresse){
+      var teile=ohneEnde(adresse);
+      return teile[0].length>8?merke(link(teile[0],teile[0]))+teile[1]:adresse;
+    });
+    // Adresse, die mit www. beginnt: klickbar als https://www.…
+    s=s.replace(/(^|[\s(„«›]|&quot;)(www\.[a-z0-9äöüß-]+(?:\.[a-z0-9äöüß-]+)+[^\s<>‹›\u0000]*)/gi,function(_,davor,adresse){
+      var teile=ohneEnde(adresse);
+      return davor+merke(link('https://'+teile[0],teile[0]))+teile[1];
+    });
+    s=s.replace(/\*\*([^*\n]+?)\*\*/g,'<strong>$1</strong>');
+    s=s.replace(/(^|[\s(„"«>])_([^_\n]+?)_(?=$|[\s.,;:!?)“"»<])/g,'$1<em>$2</em>');
+    return s.replace(/\u0000(\d+)\u0000/g,function(_,nr){return fertig[Number(nr)];});
+  }
+  function beitragsTextZuHtml(text){
+    var zeilen=String(text||'').replace(/\r\n?/g,'\n').split('\n');
+    var teile=[], absatz=[];
+    var schliesse=function(){if(absatz.length){teile.push('<p style="margin-bottom:1em">'+absatz.join('<br>')+'</p>');absatz=[];}};
+    zeilen.forEach(function(zeile){
+      var kurz=zeile.trim();
+      if(!kurz){schliesse();return;}
+      if(videoArt(kurz)){schliesse();teile.push(videoHtml(kurz));return;}
+      absatz.push(zeileZuHtml(zeile));
+    });
+    schliesse();
+    return teile.join('');
+  }
+  // Für den Teaser: der Text ohne die Auszeichnungen und ohne Video-Zeilen.
+  function ohneTextformat(text){
+    return String(text||'').replace(/\r\n?/g,'\n').split('\n')
+      .filter(function(zeile){return !videoArt(zeile.trim());}).join('\n')
+      .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)<>]+)\)/gi,'$1')
+      .replace(/\*\*([^*\n]+?)\*\*/g,'$1')
+      .replace(/(^|[\s(„"«])_([^_\n]+?)_(?=$|[\s.,;:!?)“"»])/gm,'$1$2');
+  }
 
   // Teaser = Anfang des Textes: HTML-Zeichen und Zeilenumbrüche raus,
   // am Wortende gekürzt. Kurze Texte bleiben ganz.
   function kurzText(txt){
-    var s=String(txt||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+    var s=ohneTextformat(txt).replace(/\s+/g,' ').trim();
     if(s.length<=TEASER_LAENGE)return s;
     var k=s.slice(0,TEASER_LAENGE);
     var i=k.lastIndexOf(' ');
@@ -1163,7 +1255,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     headline:    b.titel     ||'',
     teaser:      kurzText(b.text),
     spielbericht:b.text      ||'',
-    bild_url:    b.bild_url  ||'',
+    bild_url:    bildAdresse(b.bild_url),
     video_url:   b.video_url ||'',
     kategorie:   b.kategorie ||'',
     datum:       b.datum||b.erstellt_am||''
@@ -1220,7 +1312,9 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     document.getElementById('artikel-teaser').style.display='none';
     var body=document.getElementById('artikel-body');
     var txt=b.spielbericht||'';
-    body.innerHTML=txt.includes('<')?txt:txt?txt.split('\n\n').map(function(p){return'<p style="margin-bottom:1em">'+esc(p)+'</p>';}).join(''):'';
+    // Der Text wird nie als HTML eingesetzt, nur über das Textformat
+    // (siehe beitragsTextZuHtml).
+    body.innerHTML=beitragsTextZuHtml(txt);
     var ytM=b.video_url&&b.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     if(ytM)body.innerHTML+='<div style="margin-top:24px;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/'+ytM[1]+'" frameborder="0" allowfullscreen style="display:block;"></iframe></div>';
     document.getElementById('artikel-modal').style.display='block';
