@@ -136,6 +136,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--primary-dim);border:1px solid rgba(244,122,31,.3);color:var(--primary);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:7px 16px;border-radius:var(--round);margin-bottom:22px;}
 .hero-title{font-family:var(--font-headline);font-size:clamp(34px,5vw,58px);font-weight:600;text-transform:uppercase;line-height:1.08;letter-spacing:-.01em;margin-bottom:22px;text-wrap:balance;}
 .hero-title span{color:var(--primary);}
+/* Erster Teil des Titels weiß, nur der zweite Teil (Hervorhebung) orange – in allen Sprachen. */
+.hero-title span[data-i18n="web_hero_title"]{color:inherit;}
 .hero-sub{font-size:19px;color:var(--muted);line-height:1.7;max-width:520px;margin-bottom:36px;}
 .hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
 .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border);padding-top:28px;}
@@ -386,6 +388,9 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 .ref-logo-ganz{width:100%;height:100%;object-fit:contain;}
 .ref-shot .ico{width:40px;height:40px;color:var(--faint);}
 .ref-weitere{opacity:.8;}
+/* Knöpfe „App ansehen“ / „Website ansehen“: mindestens 44 px hoch, damit sie am Handy gut antippbar sind. */
+.ref-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.ref-links .btn{flex:1 1 auto;justify-content:center;min-height:44px;padding:10px 14px;white-space:nowrap;}
 /* Darazsak-Karte: freigegeben, bleibt sichtbar. Zum Ausblenden "none" statt "block" eintragen. */
 #refDarazsak{display:block;}
 .preis-grid-2{grid-template-columns:repeat(2,1fr);max-width:880px;margin:0 auto;}
@@ -422,6 +427,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 /* Sehr dezentes Schweben – nur wenn das Gerät keine reduzierte Bewegung wünscht. */
 @keyframes hv-schweben{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 @media(prefers-reduced-motion:no-preference){.hv-phone{animation:hv-schweben 7s ease-in-out infinite;}.hv-browser{animation:hv-schweben 9s ease-in-out -3s infinite;}}
+/* Eigenes Hero-Bild aus Supabase (app_bild_url von V001): ersetzt Browser + Handy, sobald es geladen ist. */
+.hv-eigen{display:block;width:100%;height:auto;max-height:640px;object-fit:contain;}
+@media(prefers-reduced-motion:no-preference){.hv-eigen{animation:hv-schweben 9s ease-in-out infinite;}}
+@media(max-width:1024px){.hv-eigen{max-width:540px;}}
 /* Tablet: Bild unter dem Text, kleiner. Handy: kein Bild (Text und Knopf zuerst). */
 @media(max-width:1024px){.hero-visual{order:0;min-height:0;}.hv-laptop{max-width:540px;min-height:400px;}.hv-phone{width:176px;border-radius:30px;padding:8px;}.hv-phone .hv-shot{border-radius:22px;}}
 @media(max-width:640px){.hero-visual{display:none;}}
@@ -666,12 +675,22 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     <div class="ref-grid">
       <div class="ref-card">
         <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo-ganz" src="logos/logo-scorpions.webp" width="200" height="200" alt="Scorpions SG Gierath"></div></div>
-        <div class="ref-body"><div class="ref-name">Scorpions SG Gierath</div><div class="ref-meta" data-i18n="web_ref_scorpions_meta">Basketball · NRW</div></div>
+        <div class="ref-body"><div class="ref-name">Scorpions SG Gierath</div><div class="ref-meta" data-i18n="web_ref_scorpions_meta">Basketball · NRW</div>
+          <div class="ref-links">
+            <a class="btn btn-ghost btn-sm" href="https://club.onlang.de/?kunde=V002" target="_blank" rel="noopener" data-i18n="web_ref_app_ansehen">App ansehen</a>
+            <a class="btn btn-ghost btn-sm" href="https://onlang-app.netlify.app/template7.html?kunde=V002" target="_blank" rel="noopener" data-i18n="web_ref_website_ansehen">Website ansehen</a>
+          </div>
+        </div>
       </div>
       <!-- Darazsak-Karte: Referenz und Logo am 09.10.2026 freigegeben. Ein- und Ausblenden im Stil-Block oben (#refDarazsak). -->
       <div class="ref-card" id="refDarazsak">
         <div class="ref-shot"><div class="ref-logo-box"><img class="ref-logo-ganz" src="logos/logo-darazsak.webp" width="260" height="260" alt="Kőbányai Darazsak"></div></div>
-        <div class="ref-body"><div class="ref-name">Kőbányai Darazsak</div><div class="ref-meta" data-i18n="web_ref_darazsak_meta">Basketball · Budapest, Ungarn</div></div>
+        <div class="ref-body"><div class="ref-name">Kőbányai Darazsak</div><div class="ref-meta" data-i18n="web_ref_darazsak_meta">Basketball · Budapest, Ungarn</div>
+          <div class="ref-links">
+            <a class="btn btn-ghost btn-sm" href="https://club.onlang.de/?kunde=HU001" target="_blank" rel="noopener" data-i18n="web_ref_app_ansehen">App ansehen</a>
+            <a class="btn btn-ghost btn-sm" href="https://onlang-app.netlify.app/template7.html?kunde=HU001" target="_blank" rel="noopener" data-i18n="web_ref_website_ansehen">Website ansehen</a>
+          </div>
+        </div>
       </div>
       <div class="ref-card ref-weitere">
         <div class="ref-shot"><svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></div>
@@ -943,6 +962,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     web_ref_scorpions_meta:'Basketball · NRW',
     web_ref_darazsak_meta:'Basketball · Budapest, Ungarn',
     web_ref_weitere:'Weitere Vereine folgen.',
+    web_ref_app_ansehen:'App ansehen',
+    web_ref_website_ansehen:'Website ansehen',
     web_preis_gruenderpreis:'Gründerpreis',
     web_preis_basic_betrag:'9,90 €',
     web_preis_basic_statt:'statt 29,90 €',
@@ -1002,16 +1023,49 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
   // tr(key): Website-Text in aktueller Sprache. Fallback-Kette:
   // Sheet-Wert (aktuelle Sprache) → eingebautes Deutsch → Key selbst.
   // Ein fehlender Key lässt die Website NIE abstürzen.
+  // Hero aus Supabase (Tabelle website_einstellungen, Kunde V001), gepflegt
+  // im Website-Admin. Gefüllt wird das vom News-Skript weiter unten.
+  // Gilt NUR für Deutsch; HU/EN bleiben aus texte/*.json. Leeres Feld oder
+  // Supabase nicht erreichbar = der eingebaute Text bleibt (Sicherheitsnetz).
+  //   texte: Werte, die tr() vor allen anderen nimmt (z. B. web_hero_subtitle).
+  //   titel: große Überschrift; Text in *Sternchen* wird orange, der Rest weiß.
+  window.heroAusSupabase = { texte:{}, titel:'' };
+  var heroTitelOriginal = null;
+
+  // Vor dem Übersetzen: die zwei ursprünglichen Titel-Teile zurückholen,
+  // falls der Titel aus Supabase sie ersetzt hat (z. B. Wechsel auf HU).
+  function heroTitelZuruecksetzen(){
+    var h1 = document.querySelector('.hero-title');
+    if (!h1) return;
+    if (heroTitelOriginal === null) heroTitelOriginal = h1.innerHTML;
+    else if (!h1.querySelector('[data-i18n]')) h1.innerHTML = heroTitelOriginal;
+  }
+
+  // Nach dem Übersetzen: bei Deutsch den Titel aus Supabase einsetzen.
+  function heroTitelEinsetzen(){
+    var h1 = document.querySelector('.hero-title');
+    if (!h1 || aktuelleWebsiteSprache !== 'de' || !heroAusSupabase.titel) return;
+    h1.textContent = '';
+    heroAusSupabase.titel.split(/\*([^*]+)\*/).forEach(function(teil, i){
+      if (!teil) return;
+      if (i % 2) { var s = document.createElement('span'); s.textContent = teil; h1.appendChild(s); }
+      else h1.appendChild(document.createTextNode(teil));
+    });
+  }
+
   window.tr = function(key){
+    if (aktuelleWebsiteSprache === 'de' && Object.prototype.hasOwnProperty.call(heroAusSupabase.texte, key) && heroAusSupabase.texte[key]) return heroAusSupabase.texte[key];
     if (Object.prototype.hasOwnProperty.call(websiteTranslations, key) && websiteTranslations[key]) return websiteTranslations[key];
     if (Object.prototype.hasOwnProperty.call(TRANSLATIONS_FALLBACK_WEB_DE, key)) return TRANSLATIONS_FALLBACK_WEB_DE[key];
     return key;
   };
 
   window.wendeWebsiteUebersetzungenAn = function(){
+    heroTitelZuruecksetzen();
     document.querySelectorAll('[data-i18n]').forEach(function(el){
       el.textContent = tr(el.getAttribute('data-i18n'));
     });
+    heroTitelEinsetzen();
     document.querySelectorAll('[data-i18n-title]').forEach(function(el){
       el.title = tr(el.getAttribute('data-i18n-title'));
     });
@@ -1202,6 +1256,63 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
       renderNews(beitraege);
     })
     .catch(function(e){console.warn('News: nicht geladen.',e.message);renderHinweis();});
+
+  // Hero aus Supabase (website_einstellungen, Zeile von V001): große
+  // Überschrift, Unterzeile und Bild. Die Texte gelten nur für
+  // Deutsch (siehe heroAusSupabase oben), das Bild für alle Sprachen.
+  // Leeres Feld oder Fehler: Text und Bild der Seite bleiben, wie sie sind.
+  var HERO_BILD_BREITE = 1200; // etwa doppelte Anzeigebreite (scharf auf guten Bildschirmen)
+
+  // Cloudinary-Adresse: verkleinert (nie vergrößert) und als WebP. Andere
+  // Adressen und solche, die schon eine Umwandlung tragen, bleiben wie sie sind.
+  function heroBildAdresse(url){
+    var m=url.match(/^(https:\/\/res\.cloudinary\.com\/[^\/]+\/image\/upload\/)(v\d+\/.+)$/i);
+    return m?m[1]+'f_webp,q_auto,c_limit,w_'+HERO_BILD_BREITE+'/'+m[2]:url;
+  }
+
+  // Ersetzt das GANZE Bild rechts (Browser + Handy) durch das eigene Bild.
+  // Das eingebaute Bild wird erst ausgeblendet, wenn das neue fertig geladen
+  // ist. Lädt die verkleinerte Fassung nicht, wird die Originaladresse
+  // versucht; lädt auch die nicht, bleibt das eingebaute Bild.
+  // Unter 640 px zeigt die Seite kein Hero-Bild: dann wird auch nichts
+  // geladen, erst wenn das Fenster breiter wird.
+  function zeigeHeroBild(url){
+    var rahmen=document.querySelector('.hero-visual');
+    var eingebaut=rahmen&&rahmen.querySelector('.hv-laptop');
+    if(!eingebaut)return;
+    var schmal=window.matchMedia('(max-width:640px)');
+    if(schmal.matches){
+      var warte=function(){if(schmal.matches)return;schmal.removeEventListener('change',warte);zeigeHeroBild(url);};
+      schmal.addEventListener('change',warte);
+      return;
+    }
+    var adressen=[heroBildAdresse(url)];
+    if(adressen[0]!==url)adressen.push(url);
+    var img=new Image();
+    img.className='hv-eigen';
+    img.alt='';
+    img.decoding='async';
+    img.onload=function(){eingebaut.style.display='none';rahmen.appendChild(img);};
+    img.onerror=function(){if(adressen.length)img.src=adressen.shift();};
+    img.src=adressen.shift();
+  }
+  var heroAbfrage=SUPABASE_URL+'/rest/v1/website_einstellungen'
+    +'?kunden_id=eq.'+encodeURIComponent(KUNDEN_ID)
+    +'&select=hero_titel,hero_unterzeile,app_bild_url';
+
+  fetch(heroAbfrage,{headers:{apikey:SUPABASE_KEY}})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(zeilen){
+      var z=Array.isArray(zeilen)?zeilen[0]:null;
+      if(!z)return;
+      var unterzeile=String(z.hero_unterzeile||'').trim();
+      var bild=String(z.app_bild_url||'').trim();
+      heroAusSupabase.titel=String(z.hero_titel||'').trim();
+      if(unterzeile)heroAusSupabase.texte.web_hero_subtitle=unterzeile;
+      wendeWebsiteUebersetzungenAn();
+      if(/^https:\/\/\S+$/i.test(bild))zeigeHeroBild(bild);
+    })
+    .catch(function(e){console.warn('Hero: nicht geladen.',e.message);});
 })();
 </script>
 
@@ -1264,7 +1375,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
             <div class="ki-lbl" data-i18n="web_kontakt_social_media">Social Media</div>
             <div class="ki-soc">
               <a href="https://www.facebook.com/onlang23" target="_blank" rel="noopener" title="Facebook"><svg class="ico" aria-hidden="true"><use href="#i-facebook"></use></svg></a>
-              <a href="https://www.instagram.com/onlang23/" target="_blank" rel="noopener" title="Instagram"><svg class="ico" aria-hidden="true"><use href="#i-instagram"></use></svg></a>
+              <a href="https://www.instagram.com/onlang.sport/" target="_blank" rel="noopener" title="Instagram"><svg class="ico" aria-hidden="true"><use href="#i-instagram"></use></svg></a>
               <a href="https://www.linkedin.com/in/onlang/" target="_blank" rel="noopener" title="LinkedIn"><svg class="ico" aria-hidden="true"><use href="#i-linkedin"></use></svg></a>
             </div>
           </div>
