@@ -25,6 +25,10 @@ h3{font-size:17px;font-weight:700;color:var(--text);margin:26px 0 8px;}
 p{color:var(--muted);margin-bottom:14px;}
 p.untertitel{color:var(--text);font-weight:600;}
 p.fassung{font-size:14px;color:var(--faint);}
+/* Hinweis bei ?lang=hu/en (rechtsseiten.js): nur deutsche Fassung verbindlich */
+.sprach-hinweis{background:var(--card);border:1px solid var(--border-2);border-left:4px solid var(--primary);border-radius:8px;padding:14px 18px;margin-bottom:28px;font-size:15px;color:var(--muted);}
+.sprach-hinweis strong{color:var(--text);}
+.sprach-hinweis a{color:var(--primary);}
 strong{color:var(--text);}
 ul{color:var(--muted);margin:0 0 14px 22px;}
 ul.nr{list-style:none;margin-left:0;}
