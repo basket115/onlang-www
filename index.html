@@ -233,6 +233,8 @@ section[id]{scroll-margin-top:80px;}
 .ev-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:8px;}
 .ev-name{font-weight:700;font-size:19px;color:var(--text);}
 .ev-desc{color:var(--muted);line-height:1.55;}
+.ev-hinweis{color:var(--muted);font-size:13px;text-align:center;margin:-8px 0 18px;}
+.ev-hinweis:empty{display:none;}
 @media(max-width:1024px){.ev-grid{grid-template-columns:1fr;max-width:640px;margin:0 auto;}.ev-video.ev-hoch{aspect-ratio:auto;height:min(78vh,600px);}}
 
 /* ═══════════════════════════════════════════════════════
@@ -668,6 +670,7 @@ section[id]{scroll-margin-top:80px;}
       <h2 class="sec-title" data-i18n="web_ev_title">So funktioniert's</h2>
       <p class="sec-sub" data-i18n="web_ev_subtitle">Kurze Videos zeigen Ihnen ONLANG Schritt für Schritt.</p>
     </div>
+    <p class="ev-hinweis" data-i18n="web_ev_sprache_hinweis"></p>
     <div class="ev-grid">
       <div class="ev-card">
         <div class="ev-video" data-youtube="https://youtu.be/jHs4If33JI8" data-titel="Anmeldung bei ONLANG – kurz erklärt"><!-- Video 1 Anmeldung --></div>
@@ -982,6 +985,7 @@ section[id]{scroll-margin-top:80px;}
     web_ev_studio_name:'Das ONLANG Studio',
     web_ev_studio_desc:'So schreiben Sie einen Beitrag und veröffentlichen ihn auf Website, App, Facebook und Instagram – sofort oder geplant.',
     web_ev_folgt:'Video folgt in Kürze.',
+    web_ev_sprache_hinweis:'',
     web_ev_anm_name:'Die Anmeldung',
     web_ev_anm_desc:'So melden Sie Ihren Verein an und testen ONLANG 14 Tage kostenlos – ohne Zahlungsdaten.',
     web_ev_ki_name:'Der KI-Spielbericht',
