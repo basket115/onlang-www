@@ -70,6 +70,8 @@ ul{list-style:none;}
 html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 .wrap{max-width:var(--mw);margin:0 auto;padding:0 28px;}
 .sec{padding:88px 0;}
+/* Menü-Sprung: Abschnitt endet nicht unter der festen Kopfzeile (ca. 77 px hoch). */
+section[id]{scroll-margin-top:80px;}
 .sec-alt{background:var(--bg-soft);}
 .sec-head{margin-bottom:48px;text-align:center;}
 .sec-head.left{text-align:left;}
@@ -115,7 +117,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 .hdr-logo{width:42px;height:42px;border-radius:var(--rl);background:var(--primary);display:flex;align-items:center;justify-content:center;font-family:var(--font-headline);font-size:17px;font-weight:700;color:#fff;flex-shrink:0;}
 .hdr-logo-img{width:46px;height:46px;border-radius:50%;background:#fff;padding:2px;object-fit:contain;flex-shrink:0;}
 .hdr-name{font-family:var(--font-headline);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--hdr-text);}
-.hdr-nav{display:flex;align-items:center;gap:30px;}
+.hdr-nav{display:flex;align-items:center;gap:14px;}
 .hdr-nav a{position:relative;font-size:15px;font-weight:600;color:var(--hdr-text-dim);transition:color 200ms cubic-bezier(.4,0,.2,1);}
 .hdr-nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-6px;height:1.5px;background:var(--primary);transition:right 220ms cubic-bezier(.4,0,.2,1);}
 .hdr-nav a:hover{color:var(--text);}
@@ -218,6 +220,22 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 
 @media(max-width:1024px){.loes-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:640px){.loes-grid{grid-template-columns:1fr;}}
+/* So funktioniert's: drei Erklärvideos (App, Admin, Studio) */
+.ev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.ev-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;}
+.ev-video{aspect-ratio:16/9;background:#000;position:relative;}
+.ev-video iframe{display:block;width:100%;height:100%;border:0;}
+/* Hochformat (Short): am Computer gleiche Kartenhoehe wie die anderen (YouTube zeigt das Video mittig),
+   am Handy ein hoher Kasten, damit das Video gross erscheint */
+.ev-platzhalter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,var(--card-2),var(--card-3));color:var(--muted);font-size:14px;}
+.ev-play{width:58px;height:58px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;}
+.ev-play::after{content:'';border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #fff;margin-left:5px;}
+.ev-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:8px;}
+.ev-name{font-weight:700;font-size:19px;color:var(--text);}
+.ev-desc{color:var(--muted);line-height:1.55;}
+.ev-hinweis{color:var(--muted);font-size:13px;text-align:center;margin:-8px 0 18px;}
+.ev-hinweis:empty{display:none;}
+@media(max-width:1024px){.ev-grid{grid-template-columns:1fr;max-width:640px;margin:0 auto;}.ev-video.ev-hoch{aspect-ratio:auto;height:min(78vh,600px);}}
 
 /* ═══════════════════════════════════════════════════════
    SO FUNKTIONIERT ONLANG (Flow-Diagramm)
@@ -421,8 +439,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 .ueber-rm-txt{font-size:15px;font-weight:600;color:var(--text);}
 /* Der Hauptknopf ist länger geworden und "Login Studio" ist dazugekommen: das Menü wechselt früher auf die drei Striche. */
 .hdr-nav a,.hdr-right .btn{white-space:nowrap;}
-@media(max-width:1500px){.hdr-nav{gap:22px;}}
-@media(max-width:1320px){.hdr-nav{display:none;}.hdr-burger{display:flex;}}
+@media(max-width:1500px){.hdr-nav{gap:14px;}}
+@media(max-width:1400px){.hdr-nav{display:none;}.hdr-burger{display:flex;}}
 /* Hero-Produktbild: Browser-Rahmen hinten, Handy-Rahmen vorn. */
 .hv-browser{border-radius:14px;padding:14px;}
 .hv-shot{display:block;width:100%;height:auto;border-radius:8px;}
@@ -498,6 +516,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     <nav class="hdr-nav">
       <a href="#start" data-i18n="web_nav_start">Start</a>
       <a href="#loesungen" data-i18n="web_nav_loesungen">Lösungen</a>
+      <a href="#so-gehts" data-i18n="web_nav_so_gehts">So funktioniert's</a>
       <a href="#preise" data-i18n="web_nav_preise">Preise</a>
       <a href="#news" data-i18n="web_nav_news">News</a>
       <a href="#referenzen" data-i18n="web_nav_referenzen">Referenzen</a>
@@ -520,6 +539,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
 <nav class="mob-nav" id="mobNav">
   <a href="#start" data-i18n="web_nav_start">Start</a>
   <a href="#loesungen" data-i18n="web_nav_loesungen">Lösungen</a>
+      <a href="#so-gehts" data-i18n="web_nav_so_gehts">So funktioniert's</a>
   <a href="#preise" data-i18n="web_nav_preise">Preise</a>
   <a href="#news" data-i18n="web_nav_news">News</a>
   <a href="#referenzen" data-i18n="web_nav_referenzen">Referenzen</a>
@@ -639,6 +659,70 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     <div class="flow-claim" data-i18n="web_flow_claim">Einmal erstellen. Mehrfach nutzen.</div>
   </div>
 </section>
+
+<!-- ═══════════ SO FUNKTIONIERT'S (Erklärvideos) ═══════════
+     YouTube-Links: unten bei data-youtube="" eintragen (z. B.
+     https://www.youtube.com/watch?v=XXXXXXXXXXX). Leer = Platzhalter „Video folgt“. -->
+<section class="sec sec-alt reveal" id="so-gehts">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow" data-i18n="web_ev_eyebrow">Erklärvideos</div>
+      <h2 class="sec-title" data-i18n="web_ev_title">So funktioniert's</h2>
+      <p class="sec-sub" data-i18n="web_ev_subtitle">Kurze Videos zeigen Ihnen ONLANG Schritt für Schritt.</p>
+    </div>
+    <p class="ev-hinweis" data-i18n="web_ev_sprache_hinweis"></p>
+    <div class="ev-grid">
+      <div class="ev-card">
+        <div class="ev-video" data-youtube="https://youtu.be/jHs4If33JI8" data-titel="Anmeldung bei ONLANG – kurz erklärt"><!-- Video 1 Anmeldung --></div>
+        <div class="ev-body"><div class="ev-name" data-i18n="web_ev_anm_name">Die Anmeldung</div><div class="ev-desc" data-i18n="web_ev_anm_desc">So melden Sie Ihren Verein an und testen ONLANG 14 Tage kostenlos – ohne Zahlungsdaten.</div></div>
+      </div>
+      <div class="ev-card">
+        <div class="ev-video ev-hoch" data-youtube="https://youtube.com/shorts/oVb7rTp4m0o" data-titel="Die Vereins-App – kurz erklärt"><!-- Video 2 Vereins-App (Short, Hochformat) --></div>
+        <div class="ev-body"><div class="ev-name" data-i18n="web_ev_app_name">Die Vereins-App</div><div class="ev-desc" data-i18n="web_ev_app_desc">So nutzen Mitglieder, Eltern und Fans die App Ihres Vereins – vom Installieren bis zum Spieltermin.</div></div>
+      </div>
+      <div class="ev-card">
+        <div class="ev-video" data-youtube="https://youtu.be/cqB4O9WcWho" data-titel="Der Vereins-Admin – kurz erklärt"><!-- Video 3 Vereins-Admin --></div>
+        <div class="ev-body"><div class="ev-name" data-i18n="web_ev_admin_name">Der Vereins-Admin</div><div class="ev-desc" data-i18n="web_ev_admin_desc">So richten Sie Ihren Verein ein: Vereinsname, Logo, Farben, Mannschaften und Sponsoren.</div></div>
+      </div>
+      <div class="ev-card">
+        <div class="ev-video" data-youtube="https://youtu.be/PvzTmryCzbA" data-titel="Das ONLANG Studio – kurz erklärt"><!-- Video 4 ONLANG Studio --></div>
+        <div class="ev-body"><div class="ev-name" data-i18n="web_ev_studio_name">Das ONLANG Studio</div><div class="ev-desc" data-i18n="web_ev_studio_desc">So schreiben Sie einen Beitrag und veröffentlichen ihn auf Website, App, Facebook und Instagram – sofort oder geplant.</div></div>
+      </div>
+      <div class="ev-card">
+        <div class="ev-video" data-youtube="https://youtu.be/wnjQqGX_AVs" data-titel="Der KI-Spielbericht – kurz erklärt"><!-- Video 5 KI-Spielbericht --></div>
+        <div class="ev-body"><div class="ev-name" data-i18n="web_ev_ki_name">Der KI-Spielbericht</div><div class="ev-desc" data-i18n="web_ev_ki_desc">So wird aus dem Spielbogen ein fertiger Entwurf für Ihren Spielbericht – Sie prüfen und veröffentlichen.</div></div>
+      </div>
+      <div class="ev-card">
+        <div class="ev-video" data-youtube="https://youtu.be/XQ9-XDAfRzc" data-titel="ONLANG Live – kurz erklärt"><!-- Video 6 ONLANG Live --></div>
+        <div class="ev-body"><div class="ev-name" data-i18n="web_ev_live_name">ONLANG Live</div><div class="ev-desc" data-i18n="web_ev_live_desc">So übertragen Sie Spiele Ihres Vereins live – mit nur einem Handy, Spielstand inklusive.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+// So funktioniert's: YouTube-Video einsetzen, wenn ein Link eingetragen ist,
+// sonst Platzhalter. Eingebettet über youtube-nocookie.com wie bei den News.
+(function(){
+  document.querySelectorAll('#so-gehts .ev-video').forEach(function(box){
+    var url=String(box.getAttribute('data-youtube')||'').trim();
+    var m=url.match(/(?:youtube(?:-nocookie)?\.com\/(?:(?:watch)?\?(?:.*&)?v=|(?:embed|shorts|live)\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    if(m){
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0';
+      f.title=box.getAttribute('data-titel')||'Video';
+      f.loading='lazy';
+      f.allow='accelerometer; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      box.appendChild(f);
+    } else {
+      var p=document.createElement('div');
+      p.className='ev-platzhalter';
+      p.innerHTML='<span class="ev-play" aria-hidden="true"></span><span data-i18n="web_ev_folgt">Video folgt in Kürze.</span>';
+      box.appendChild(p);
+    }
+  });
+})();
+</script>
 
 <!-- BESTEHENDE WEBSITE BEHALTEN (kurzer eigener Block) -->
 <section class="sec sec-alt reveal">
@@ -890,6 +974,24 @@ html{scrollbar-width:thin;scrollbar-color:var(--card-3) var(--bg);}
     web_flow_app:'App',
     web_flow_push:'Push',
     web_flow_claim:'Einmal erstellen. Mehrfach nutzen.',
+    web_nav_so_gehts:"So funktioniert's",
+    web_ev_eyebrow:'Erklärvideos',
+    web_ev_title:"So funktioniert's",
+    web_ev_subtitle:'Kurze Videos zeigen Ihnen ONLANG Schritt für Schritt.',
+    web_ev_app_name:'Die Vereins-App',
+    web_ev_app_desc:'So nutzen Mitglieder, Eltern und Fans die App Ihres Vereins – vom Installieren bis zum Spieltermin.',
+    web_ev_admin_name:'Der Vereins-Admin',
+    web_ev_admin_desc:'So richten Sie Ihren Verein ein: Vereinsname, Logo, Farben, Mannschaften und Sponsoren.',
+    web_ev_studio_name:'Das ONLANG Studio',
+    web_ev_studio_desc:'So schreiben Sie einen Beitrag und veröffentlichen ihn auf Website, App, Facebook und Instagram – sofort oder geplant.',
+    web_ev_folgt:'Video folgt in Kürze.',
+    web_ev_sprache_hinweis:'',
+    web_ev_anm_name:'Die Anmeldung',
+    web_ev_anm_desc:'So melden Sie Ihren Verein an und testen ONLANG 14 Tage kostenlos – ohne Zahlungsdaten.',
+    web_ev_ki_name:'Der KI-Spielbericht',
+    web_ev_ki_desc:'So wird aus dem Spielbogen ein fertiger Entwurf für Ihren Spielbericht – Sie prüfen und veröffentlichen.',
+    web_ev_live_name:'ONLANG Live',
+    web_ev_live_desc:'So übertragen Sie Spiele Ihres Vereins live – mit nur einem Handy, Spielstand inklusive.',
     web_fuerwen_eyebrow:'Zielgruppe',
     web_fuerwen_title:'Für wen ist ONLANG gedacht?',
     web_fuerwen_subtitle:'ONLANG wächst mit Ihrem Verein.',
