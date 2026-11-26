@@ -463,6 +463,9 @@ section[id]{scroll-margin-top:80px;}
 @media(max-width:640px){.hero-visual{display:none;}}
 @media(max-width:860px){.angebot{grid-template-columns:1fr;gap:28px;padding:26px 22px;}}
 @media(max-width:760px){.preis-grid-2{grid-template-columns:1fr;max-width:420px;}}
+/* 3 Pakete (B4, 26.11.2026): breit 3 Spalten, sonst untereinander */
+.preis-grid-3{grid-template-columns:repeat(3,1fr);max-width:1180px;}
+@media(max-width:1024px){.preis-grid-3{grid-template-columns:1fr;max-width:420px;}}
 
 /* ═══════════════════════════════════════════════════════
    SCROLL REVEAL (leichtes Fade-In)
@@ -626,10 +629,10 @@ section[id]{scroll-margin-top:80px;}
       <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-calendar"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_veranstaltungen_name">Veranstaltungen</span></div><div class="loes-desc" data-i18n="web_loes_veranstaltungen_desc">Termine und Veranstaltungen als Beitrag ankündigen – in App und auf der Website.</div></div>
       <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-image"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_grafik_name">Grafikgenerator</span></div><div class="loes-desc" data-i18n="web_loes_grafik_desc">Ergebnisse, Termine und Tabellen in Sekunden als Grafik für Social Media. Banner für Veranstaltungen (in Kürze).</div></div>
       <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_sponsoren_name">Sponsoren</span></div><div class="loes-desc" data-i18n="web_loes_sponsoren_desc">Digitale Sichtbarkeit für Ihre Sponsoren auf Website und App.</div></div>
-      <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-cpu"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_ki_name">KI-Spielberichte</span> <span class="loes-soon" data-i18n="web_badge_in_kuerze">in Kürze</span></div><div class="loes-desc" data-i18n="web_loes_ki_desc">Spielberichte entstehen automatisch aus dem Spielbogen.</div></div>
-      <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_social_name">Social Media</span> <span class="loes-soon" data-i18n="web_badge_in_kuerze">in Kürze</span></div><div class="loes-desc" data-i18n="web_loes_social_desc">Beiträge per Knopfdruck auf Facebook und Instagram veröffentlichen.</div></div>
+      <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-cpu"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_ki_name">KI-Spielberichte</span></div><div class="loes-desc" data-i18n="web_loes_ki_desc">Spielberichte entstehen automatisch aus dem Spielbogen.</div></div>
+      <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_social_name">Social Media</span></div><div class="loes-desc" data-i18n="web_loes_social_desc">Beiträge per Knopfdruck auf Facebook und Instagram veröffentlichen.</div></div>
       <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-mail"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_newsletter_name">Newsletter</span> <span class="loes-soon" data-i18n="web_badge_in_kuerze">in Kürze</span></div><div class="loes-desc" data-i18n="web_loes_newsletter_desc">Vereinsnachrichten automatisch als Newsletter.</div></div>
-      <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-newspaper"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_presse_name">Presse &amp; Vereinszeitung</span> <span class="loes-soon" data-i18n="web_badge_in_kuerze">in Kürze</span></div><div class="loes-desc" data-i18n="web_loes_presse_desc">Aus Ihren Inhalten entstehen Pressetexte und Publikationen.</div></div>
+      <div class="loes-card"><div class="loes-ico"><svg class="ico" aria-hidden="true"><use href="#i-newspaper"></use></svg></div><div class="loes-name"><span data-i18n="web_loes_presse_name">Presse &amp; Vereinszeitung</span></div><div class="loes-desc" data-i18n="web_loes_presse_desc">Aus Ihren Inhalten entstehen Pressetexte und Publikationen.</div></div>
     </div>
   </div>
 </section>
@@ -652,7 +655,7 @@ section[id]{scroll-margin-top:80px;}
         <div class="flow-chan"><svg class="ico" aria-hidden="true"><use href="#i-smartphone"></use></svg> <span data-i18n="web_flow_app">App</span></div>
         <div class="flow-chan"><svg class="ico" aria-hidden="true"><use href="#i-video"></use></svg> <span data-i18n="web_loes_tv_name">Vereins-TV</span></div>
         <div class="flow-chan"><svg class="ico" aria-hidden="true"><use href="#i-bell"></use></svg> <span data-i18n="web_flow_push">Push</span> <span class="loes-soon" data-i18n="web_badge_in_kuerze">in Kürze</span></div>
-        <div class="flow-chan"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"></use></svg> <span data-i18n="web_loes_social_name">Social Media</span> <span class="loes-soon" data-i18n="web_badge_in_kuerze">in Kürze</span></div>
+        <div class="flow-chan"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"></use></svg> <span data-i18n="web_loes_social_name">Social Media</span></div>
         <div class="flow-chan"><svg class="ico" aria-hidden="true"><use href="#i-mail"></use></svg> <span data-i18n="web_loes_newsletter_name">Newsletter</span> <span class="loes-soon" data-i18n="web_badge_in_kuerze">in Kürze</span></div>
       </div>
     </div>
@@ -817,7 +820,7 @@ section[id]{scroll-margin-top:80px;}
       <h2 class="sec-title" data-i18n="web_nav_preise">Preise</h2>
       <p class="sec-sub" data-i18n="web_preise_subtitle">Transparent und fair – mit einem besonderen Gründerangebot zum Marktstart.</p>
     </div>
-    <div class="preis-grid preis-grid-2">
+    <div class="preis-grid preis-grid-2 preis-grid-3">
       <div class="preis-card">
         <div class="preis-name">BASIC</div>
         <div class="preis-tag" data-i18n="web_preis_basic_tag">Ihr Verein ist digital.</div>
@@ -847,20 +850,38 @@ section[id]{scroll-margin-top:80px;}
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f3">Beiträge als Entwurf speichern und zeitlich planen</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f4">Pro Beitrag wählen, wo er erscheint</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f5">Vereins-TV</span></div>
-          <div class="preis-feature dim"><span class="preis-feature-ico">○</span><span data-i18n="web_preis_pro_f6">Push-Mitteilungen (in Kürze)</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f7">Veranstaltungen</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f8">Grafikgenerator für Ergebnisse, Termine und Tabellen</span></div>
-          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f9">KI-Spielberichte aus dem Spielbogen (PDF)</span></div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f9">KI-Spielberichte aus dem Spielbogen (PDF) – bis zu 30 pro Monat</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f10">Social Media per Knopfdruck (Facebook &amp; Instagram)</span></div>
-          <div class="preis-feature dim"><span class="preis-feature-ico">○</span><span data-i18n="web_preis_pro_f11">Newsletter (in Kürze)</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_pro_f12">Presse &amp; Vereinszeitung (Texte zum Kopieren)</span></div>
         </div>
         <a class="btn btn-primary btn-block" href="https://anmeldung.onlang.de/?lang=de&amp;paket=pro" data-paket="pro" data-i18n="web_btn_kostenlos_testen">14 Tage kostenlos testen</a>
       </div>
+      <div class="preis-card">
+        <div class="preis-badge" data-i18n="web_badge_neu">Neu</div>
+        <div class="preis-name">PRO+</div>
+        <div class="preis-tag" data-i18n="web_preis_proplus_tag">ONLANG arbeitet für Ihren Verein.</div>
+        <div class="preis-label" data-i18n="web_preis_gruenderpreis">Gründerpreis</div>
+        <div class="preis-price"><span class="preis-amount" data-i18n="web_preis_proplus_betrag">49,90 €</span><span class="preis-period" data-i18n="web_preis_pro_monat">/ Monat</span><span class="preis-statt" data-i18n="web_preis_proplus_statt">regulär 79,90 €</span></div>
+        <div class="preis-setup" data-i18n="web_preis_proplus_einrichtung">Einrichtung: 0 € für Gründervereine (regulär 149,00 €)</div>
+        <div class="preis-features">
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_proplus_f1">Alles aus PRO</span></div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_proplus_f2">ONLANG Live für Seniorenmannschaften (Basketball und Fußball)</span></div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_proplus_f3">Spielstand-Anzeige mit Sponsor</span></div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_proplus_f4">Aufnahmen der Spiele</span></div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_preis_proplus_f5">Highlights mit Intro und Sponsor im Abspann</span></div>
+          <div class="preis-feature dim"><span class="preis-feature-ico">○</span><span data-i18n="web_preis_proplus_f6">Automatisches Veröffentlichen nach Regeln (demnächst)</span></div>
+          <div class="preis-feature dim"><span class="preis-feature-ico">○</span><span data-i18n="web_preis_proplus_f7">Newsletter (demnächst)</span></div>
+          <div class="preis-feature dim"><span class="preis-feature-ico">○</span><span data-i18n="web_preis_proplus_f8">Push-Mitteilungen (demnächst)</span></div>
+          <div class="preis-feature dim"><span class="preis-feature-ico">○</span><span data-i18n="web_preis_proplus_f9">Wöchentliche Pressemitteilung (demnächst)</span></div>
+        </div>
+        <a class="btn btn-ghost btn-block" href="https://anmeldung.onlang.de/?lang=de&amp;paket=pro_plus" data-paket="pro_plus" data-i18n="web_btn_kostenlos_testen">14 Tage kostenlos testen</a>
+      </div>
     </div>
-    <p class="preis-hinweis" data-i18n="web_preis_beide">Beide Pakete: 14 Tage kostenlos testen – mit vollem PRO-Umfang. Die Testphase endet automatisch, keine Zahlungsdaten nötig.</p>
+    <p class="preis-hinweis" data-i18n="web_preis_gruender_kurz">Gründerpreise gelten für die ersten 50 Vereine, die sich bis 31.12.2026 anmelden.</p>
+    <p class="preis-hinweis" data-i18n="web_preis_beide">Alle Pakete: 14 Tage kostenlos testen – mit allen Funktionen von PRO+. Die Testphase endet automatisch, keine Zahlungsdaten nötig.</p>
     <p class="preis-hinweis" data-i18n="web_preis_hinweis">Monatlich kündbar: 1 Monat zum Monatsende. Alle Preise sind Endpreise; als Kleinunternehmer nach § 19 UStG berechnen wir keine Umsatzsteuer.</p>
-    <div class="preis-streifen" data-i18n="web_preis_proplus">Demnächst: PRO+ – Eine geplante Überraschung für Vereine mit großen Plänen.</div>
 
     <!-- Gründerangebot + Testphase in einem Kasten -->
     <div class="angebot">
@@ -871,6 +892,7 @@ section[id]{scroll-margin-top:80px;}
         <div class="angebot-liste">
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_gruender_basic">BASIC: 9,90 € / Monat (regulär 29,90 €)</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_gruender_pro">PRO: 29,90 € / Monat (regulär 49,90 €)</span></div>
+          <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_gruender_proplus">PRO+: 49,90 € / Monat (regulär 79,90 €)</span></div>
           <div class="preis-feature"><span class="preis-feature-ico">✓</span><span data-i18n="web_gruender_einrichtung">Einrichtung: 0 € (regulär 49,90 € bzw. 149,00 €)</span></div>
         </div>
         <p data-i18n="web_gruender_dauerhaft">Der Gründerpreis gilt dauerhaft, solange der Verein ohne Unterbrechung ONLANG-Kunde bleibt.</p>
@@ -878,7 +900,7 @@ section[id]{scroll-margin-top:80px;}
       </div>
       <div>
         <div class="angebot-title" data-i18n="web_test_title">14 Tage kostenlos testen</div>
-        <p data-i18n="web_test_p1">Testen Sie ONLANG 14 Tage kostenlos mit dem vollen PRO-Umfang. Die Testphase endet automatisch – ohne Kündigung und ohne Kosten. In der Testphase sind 5 KI-Spielberichte enthalten. Entdecken Sie App, Website, Studio und Vereins-TV Ihres Vereins.</p>
+        <p data-i18n="web_test_p1">Testen Sie ONLANG 14 Tage kostenlos – mit allen Funktionen von PRO+. ONLANG Live gibt es in der Testphase für Seniorenmannschaften, außerdem sind 5 KI-Spielberichte enthalten. Die Testphase endet automatisch – ohne Kündigung und ohne Kosten.</p>
         <p data-i18n="web_test_p2">Sie erhalten Ihren Testzugang und können sofort loslegen: Vereinslogo, Begrüßungstext, Vereinsfarbe, Mitgliederzahl und Mannschaften hinterlegen Sie in wenigen Minuten selbst. Auf Wunsch unterstützen wir Sie beim Einrichten.</p>
         <p data-i18n="web_test_p3">Die Testphase kann auch über den Jahreswechsel hinauslaufen. Entscheidend für den Gründerpreis ist die Registrierung innerhalb des Gründerzeitraums.</p>
       </div>
@@ -1108,16 +1130,13 @@ section[id]{scroll-margin-top:80px;}
     web_preis_pro_f3:'Beiträge als Entwurf speichern und zeitlich planen',
     web_preis_pro_f4:'Pro Beitrag wählen, wo er erscheint',
     web_preis_pro_f5:'Vereins-TV',
-    web_preis_pro_f6:'Push-Mitteilungen (in Kürze)',
     web_preis_pro_f7:'Veranstaltungen',
     web_preis_pro_f8:'Grafikgenerator für Ergebnisse, Termine und Tabellen',
-    web_preis_pro_f9:'KI-Spielberichte aus dem Spielbogen (PDF)',
+    web_preis_pro_f9:'KI-Spielberichte aus dem Spielbogen (PDF) – bis zu 30 pro Monat',
     web_preis_pro_f10:'Social Media per Knopfdruck (Facebook & Instagram)',
-    web_preis_pro_f11:'Newsletter (in Kürze)',
     web_preis_pro_f12:'Presse & Vereinszeitung (Texte zum Kopieren)',
-    web_preis_beide:'Beide Pakete: 14 Tage kostenlos testen – mit vollem PRO-Umfang. Die Testphase endet automatisch, keine Zahlungsdaten nötig.',
+    web_preis_beide:'Alle Pakete: 14 Tage kostenlos testen – mit allen Funktionen von PRO+. Die Testphase endet automatisch, keine Zahlungsdaten nötig.',
     web_preis_hinweis:'Monatlich kündbar: 1 Monat zum Monatsende. Alle Preise sind Endpreise; als Kleinunternehmer nach § 19 UStG berechnen wir keine Umsatzsteuer.',
-    web_preis_proplus:'Demnächst: PRO+ – Eine geplante Überraschung für Vereine mit großen Plänen.',
     web_gruender_title:'ONLANG Gründerangebot 2026',
     web_gruender_lead:'Die ersten 50 Vereine, die sich vom 01.11. bis 31.12.2026 anmelden und ein Paket buchen, erhalten den ONLANG-Gründerpreis.',
     web_gruender_zeitraum:'Registrierung vom 01.11. bis 31.12.2026, solange die 50 Plätze verfügbar sind.',
@@ -1126,8 +1145,24 @@ section[id]{scroll-margin-top:80px;}
     web_gruender_einrichtung:'Einrichtung: 0 € (regulär 49,90 € bzw. 149,00 €)',
     web_gruender_dauerhaft:'Der Gründerpreis gilt dauerhaft, solange der Verein ohne Unterbrechung ONLANG-Kunde bleibt.',
     web_gruender_pro_verein:'Die Preise gelten pro Verein – unabhängig von der Anzahl der Abteilungen oder Mannschaften.',
+    web_badge_neu:'Neu',
+    web_preis_proplus_tag:'ONLANG arbeitet für Ihren Verein.',
+    web_preis_proplus_betrag:'49,90 €',
+    web_preis_proplus_statt:'regulär 79,90 €',
+    web_preis_proplus_einrichtung:'Einrichtung: 0 € für Gründervereine (regulär 149,00 €)',
+    web_preis_proplus_f1:'Alles aus PRO',
+    web_preis_proplus_f2:'ONLANG Live für Seniorenmannschaften (Basketball und Fußball)',
+    web_preis_proplus_f3:'Spielstand-Anzeige mit Sponsor',
+    web_preis_proplus_f4:'Aufnahmen der Spiele',
+    web_preis_proplus_f5:'Highlights mit Intro und Sponsor im Abspann',
+    web_preis_proplus_f6:'Automatisches Veröffentlichen nach Regeln (demnächst)',
+    web_preis_proplus_f7:'Newsletter (demnächst)',
+    web_preis_proplus_f8:'Push-Mitteilungen (demnächst)',
+    web_preis_proplus_f9:'Wöchentliche Pressemitteilung (demnächst)',
+    web_preis_gruender_kurz:'Gründerpreise gelten für die ersten 50 Vereine, die sich bis 31.12.2026 anmelden.',
+    web_gruender_proplus:'PRO+: 49,90 € / Monat (regulär 79,90 €)',
     web_test_title:'14 Tage kostenlos testen',
-    web_test_p1:'Testen Sie ONLANG 14 Tage kostenlos mit dem vollen PRO-Umfang. Die Testphase endet automatisch – ohne Kündigung und ohne Kosten. In der Testphase sind 5 KI-Spielberichte enthalten. Entdecken Sie App, Website, Studio und Vereins-TV Ihres Vereins.',
+    web_test_p1:'Testen Sie ONLANG 14 Tage kostenlos – mit allen Funktionen von PRO+. ONLANG Live gibt es in der Testphase für Seniorenmannschaften, außerdem sind 5 KI-Spielberichte enthalten. Die Testphase endet automatisch – ohne Kündigung und ohne Kosten.',
     web_test_p2:'Sie erhalten Ihren Testzugang und können sofort loslegen: Vereinslogo, Begrüßungstext, Vereinsfarbe, Mitgliederzahl und Mannschaften hinterlegen Sie in wenigen Minuten selbst. Auf Wunsch unterstützen wir Sie beim Einrichten.',
     web_test_p3:'Die Testphase kann auch über den Jahreswechsel hinauslaufen. Entscheidend für den Gründerpreis ist die Registrierung innerhalb des Gründerzeitraums.',
     web_ueber_p2:'Unsere Idee ist einfach: Sportvereine sollen mehr Zeit für ihren Sport und ihre Mitglieder haben – und weniger Zeit mit doppelter digitaler Arbeit verbringen.',
