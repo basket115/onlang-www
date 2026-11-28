@@ -461,6 +461,12 @@ section[id]{scroll-margin-top:80px;}
 /* Tablet: Bild unter dem Text, kleiner. Handy: kein Bild (Text und Knopf zuerst). */
 @media(max-width:1024px){.hero-visual{order:0;min-height:0;}.hv-laptop{max-width:540px;min-height:400px;}.hv-phone{width:176px;border-radius:30px;padding:8px;}.hv-phone .hv-shot{border-radius:22px;}}
 @media(max-width:640px){.hero-visual{display:none;}}
+/* Werbefilm im Kopfbereich: volle Breite unter Text und Produktbild, 16:9, kein Autostart */
+.hero-film{position:relative;z-index:1;max-width:880px;margin:56px auto 0;padding:0 28px;}
+.hero-film-title{font-family:var(--font-headline);font-size:clamp(22px,3vw,32px);font-weight:600;text-transform:uppercase;text-align:center;color:var(--text);margin-bottom:18px;}
+.hero-film-video{aspect-ratio:16/9;background:#000;border-radius:18px;overflow:hidden;border:1px solid var(--border);}
+.hero-film-video iframe{display:block;width:100%;height:100%;border:0;}
+@media(max-width:640px){.hero-film{margin-top:36px;padding:0 16px;}}
 @media(max-width:860px){.angebot{grid-template-columns:1fr;gap:28px;padding:26px 22px;}}
 @media(max-width:760px){.preis-grid-2{grid-template-columns:1fr;max-width:420px;}}
 /* 3 Pakete (B4, 26.11.2026): breit 3 Spalten, sonst untereinander */
@@ -587,6 +593,11 @@ section[id]{scroll-margin-top:80px;}
         </div>
       </div>
     </div>
+  </div>
+  <!-- Werbefilm (YouTube XGzIj8ZDBL4), eingebettet über youtube-nocookie.com wie die Erklärvideos, ohne Autostart -->
+  <div class="hero-film">
+    <h2 class="hero-film-title" data-i18n="web_hero_film_title">ONLANG im Überblick</h2>
+    <div class="hero-film-video"><iframe src="https://www.youtube-nocookie.com/embed/XGzIj8ZDBL4?rel=0" title="ONLANG-Werbefilm" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
   </div>
 </section>
 
@@ -1088,6 +1099,7 @@ section[id]{scroll-margin-top:80px;}
     web_contact_retry:'Bitte versuchen Sie es später erneut.',
     web_hero_claim:'Einmal erstellen. Überall aktuell.',
     web_hero_claim2:'Ein Beitrag – mehrere Kanäle.',
+    web_hero_film_title:'ONLANG im Überblick',
     web_hero_button_funktionen:'Funktionen ansehen',
     web_hero_feld_website:'Website',
     web_hero_feld_app:'App',
